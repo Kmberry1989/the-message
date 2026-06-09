@@ -24,12 +24,32 @@ const RECORD_OVERRIDES = {
   killer_outfit_janitor_coveralls: { path: '/assets/models/characters/killer/creeper.fbx', format: 'fbx', scale: 0.01, animations: KILLER_ANIMS },
   killer_outfit_torn_business_suit: { path: '/assets/models/characters/killer/creeper.fbx', format: 'fbx', scale: 0.01, animations: KILLER_ANIMS },
   killer_outfit_rubber_apron: { path: '/assets/models/characters/killer/creeper.fbx', format: 'fbx', scale: 0.01, animations: KILLER_ANIMS },
-  player_fp_hands_blue_plaid_neutral: { path: '/assets/models/characters/player/first-person/hands_blue_plaid_neutral.glb' },
-  player_fp_hands_blue_plaid_phone_blank: { path: '/assets/models/characters/player/first-person/hands_blue_plaid_phone_blank.glb' },
-  player_fp_hands_blue_plaid_phone_calling_green: { path: '/assets/models/characters/player/first-person/hands_blue_plaid_phone_calling_green.glb' },
-  player_fp_hands_blue_plaid_phone_security_static: { path: '/assets/models/characters/player/first-person/hands_blue_plaid_phone_security_static.glb' },
-  player_fp_hands_blue_plaid_fists: { path: '/assets/models/characters/player/first-person/hands_blue_plaid_fists.glb' },
-  player_body_shadow_proxy: { path: '/assets/models/characters/player/player_body_shadow_proxy.glb' }
+  player_fp_hands_blue_plaid_neutral: { path: '/assets/models/characters/player/first_person_hands.glb' },
+  player_fp_hands_blue_plaid_phone_blank: { path: '/assets/models/characters/player/first_person_hands.glb' },
+  player_fp_hands_blue_plaid_phone_calling_green: { path: '/assets/models/characters/player/first_person_hands.glb' },
+  player_fp_hands_blue_plaid_phone_security_static: { path: '/assets/models/characters/player/first_person_hands.glb' },
+  player_fp_hands_blue_plaid_fists: { path: '/assets/models/characters/player/first_person_hands.glb' },
+  player_body_shadow_proxy: { path: '/assets/models/characters/player/first_person_hands.glb' },
+  wardrobe_antique_closed: { path: '/assets/models/props/closed_wardrobe.glb' },
+  wardrobe_antique_open: { path: '/assets/models/props/open_wardrobe.glb' },
+  medicine_pill_bottle_cyan: { path: '/assets/models/props/pill_bottle.glb' },
+  crt_tv_old_tube: { path: '/assets/models/props/crt-tv.glb' },
+  thermostat_analog_wall: { path: '/assets/models/props/interactables/thermostat.glb' },
+  mailbox_rural_blue_flag_down: { path: '/assets/models/props/interactables/mailbox.glb' },
+  mailbox_rural_blue_flag_up: { path: '/assets/models/props/interactables/mailbox.glb' },
+  wifi_router_black_on: { path: '/assets/models/props/interactables/router.glb' },
+  wifi_router_black_off: { path: '/assets/models/props/interactables/router.glb' },
+  security_camera_dome: { path: '/assets/models/props/security_camera.glb' },
+  security_camera_bullet: { path: '/assets/models/props/security_camera.glb' },
+  security_camera_corner: { path: '/assets/models/props/security_camera.glb' },
+  door_exit_back: { path: '/assets/models/props/exit_door.glb' },
+  window_blinds_rolled_down_open: { path: '/assets/models/props/interactables/blinds_open.glb' },
+  window_blinds_closed: { path: '/assets/models/props/interactables/blinds_closed.glb' },
+  bedroom_bed: { path: '/assets/models/props/furniture/bed.glb' },
+  red_used_mechanic_rags_wadded: { path: '/assets/models/props/trash_filth.glb' },
+  wadded_kleenex_set: { path: '/assets/models/props/newspaper_and_assorted.glb' },
+  trash_bag_black: { path: '/assets/models/props/trash_can_trash_bag.glb' },
+  old_newspapers_stack: { path: '/assets/models/props/newspaper_and_assorted.glb' }
 };
 
 export async function loadJson(path, fallbackValue) {
@@ -100,6 +120,7 @@ export class AssetSystem {
     const record = this.getRecord(assetId);
     let object = null;
     let animationClips = {};
+    let resolvedPath = null;
 
     if (record?.type === 'model') {
       for (const path of this.getCandidatePaths(assetId, record)) {
@@ -107,6 +128,7 @@ export class AssetSystem {
           const loaded = await this.loadModel(path);
           object = loaded.object;
           animationClips = { ...loaded.namedAnimations };
+          resolvedPath = path;
           break;
         } catch (error) {
           console.warn(`[fallback-model-path] ${assetId} at ${path}`, error);
@@ -121,6 +143,10 @@ export class AssetSystem {
     object.userData.assetId = assetId;
     object.userData.assetRecord = record;
     object.userData.animationClips = animationClips;
+    object.userData.assetResolvedPath = resolvedPath;
+    object.userData.assetStatusReason = object.userData.assetStatus === 'loaded'
+      ? `loaded:${resolvedPath}`
+      : `fallback:${assetId}`;
     object.position.set(options.x || 0, options.y || 0, options.z || 0);
     object.rotation.y = THREE.MathUtils.degToRad(options.rotation || 0);
     object.scale.multiplyScalar(options.scale ?? record?.scale ?? 1);

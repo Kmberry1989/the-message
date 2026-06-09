@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DID YOU GET MY MESSAGE? - Survival Horror FPS</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background-color: #000;
+            font-family: 'Courier New', Courier, monospace;
+            touch-action: none; user-select: none;
+        }
+        #game-canvas { display: block; width: 100%; height: 100%; }
+        #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        #ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; pointer-events: auto;
+            color: white; text-align: center; z-index: 20;
+        }
+        #start-screen, #game-over-screen, #victory-screen { display: none; }
+        
+        /* Struggle Screen overlay */
+        #struggle-screen { display: none; z-index: 30; background: rgba(100,0,0,0.8); }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        #struggle-title { font-size: 50px; color: #ff0000; animation: pulse 0.4s infinite alternate; font-weight: bold; text-shadow: 2px 2px 0 #000; margin-bottom: 5px; }
+        #struggle-tap-btn {
+            width: 200px; height: 200px; border-radius: 50%; font-size: 32px; font-weight: bold;
+            margin-top: 20px; background-color: #aa0000; border: 5px solid #ff0000;
+            color: white; box-shadow: 0 0 30px #ff0000; cursor: pointer; pointer-events: auto;
+        }
+        #struggle-tap-btn:active { transform: scale(0.95); background-color: #ff3333; }
+
+        h1 { color: #cc0000; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        p { color: #ccc; max-width: 80%; line-height: 1.5; margin-bottom: 20px;}
+        button {
+            padding: 12px 24px; font-size: 16px; font-family: inherit;
+            background-color: #cc0000; color: white; border: 2px solid #550000;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            transition: background-color 0.2s; pointer-events: auto; margin: 5px;
+        }
+        button:hover { background-color: #ff1a1a; }
+        
+        #hud {
+            padding: 15px; display: flex; justify-content: space-between; align-items: flex-start;
+            color: #fff; text-shadow: 1px 1px 2px #000; font-size: 16px; pointer-events: none;
+        }
+        .hud-left { display: flex; flex-direction: column; gap: 5px; }
+        .hud-center { display: flex; flex-direction: column; align-items: center; width: 100%; position: absolute; top: 15px; left: 0; pointer-events: none;}
+        
+        #stamina-bar-container { width: 150px; height: 8px; background: #333; border: 1px solid #fff; }
+        #stamina-bar { width: 100%; height: 100%; background: #00ff00; transition: width 0.1s, background-color 0.3s; }
+
+        #interaction-container { padding-bottom: 40px; display: flex; justify-content: center; min-height: 80px; }
+        #action-btn { display: none; background-color: #fff; color: #000; border: 2px solid #ccc; font-weight: bold; }
+        
+        #message-banner {
+            text-align: center; color: #ff3333; font-size: 24px; font-weight: bold; opacity: 0;
+            transition: opacity 0.5s; text-shadow: 2px 2px 4px #000; z-index: 5; margin-top: 50px;
+        }
+        #vignette {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            box-shadow: 0 0 150px rgba(0,0,0,0.5) inset; pointer-events: none; transition: box-shadow 0.3s;
+        }
+        .blood-vignette { box-shadow: 0 0 200px rgba(255,0,0,0.6) inset !important; }
+        
+        #crosshair {
+            position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
+            background-color: rgba(255,255,255,0.5); border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none;
+        }
+
+        /* Virtual Joystick */
+        #joystick-zone {
+            position: absolute; width: 150px; height: 150px; margin: -75px 0 0 -75px;
+            background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 50%;
+            pointer-events: none; display: none; z-index: 10;
+        }
+        #joystick-knob {
+            position: absolute; top: 50px; left: 50px; width: 50px; height: 50px;
+            background: rgba(255,255,255,0.5); border-radius: 50%; pointer-events: none;
+        }
+        
+        #sprint-btn {
+            position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px;
+            background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50%; color: white; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; pointer-events: auto;
+        }
+        #sprint-btn.active { background: rgba(255,0,0,0.4); border-color: #ff3333; }
+
+        /* Phone UI */
+        #phone-btn {
+            position: absolute; top: 15px; right: 15px; width: 60px; height: 60px;
+            background: #222; border: 2px solid #555; border-radius: 8px;
+            color: white; font-size: 10px; display: flex; align-items: center;
+            justify-content: center; pointer-events: auto; flex-direction: column;
+        }
+        #phone-screen {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 280px; height: 450px;
+            background: #111; border: 4px solid #333; border-radius: 15px;
+            pointer-events: auto; z-index: 15; flex-direction: column; padding: 10px;
+            box-sizing: border-box; color: white;
+        }
+        .phone-header { font-size: 14px; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 15px; display: flex; justify-content: space-between;}
+        .phone-content { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .phone-btn { background: #333; border: 1px solid #555; color: white; padding: 10px; border-radius: 5px; }
+        .phone-close { background: #500; margin-top: auto; }
+        #phone-notification {
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); border: 1px solid #555; padding: 10px;
+            border-radius: 8px; color: white; display: none; z-index: 12; width: 80%; text-align: center; pointer-events: auto;
+        }
+
+        /* Camera Overlay */
+        #camera-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            pointer-events: auto; z-index: 11; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box;
+        }
+        #cam-info { color: #fff; font-size: 20px; font-family: monospace; text-shadow: 2px 2px #000; }
+        .cam-controls { display: flex; justify-content: space-between; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="game-container"><canvas id="game-canvas"></canvas></div>
+    <div id="vignette"></div>
+    <div id="crosshair"></div>
+
+    <div id="ui-layer">
+        <div id="joystick-zone"><div id="joystick-knob"></div></div>
+
+        <div id="hud">
+            <div class="hud-left">
+                <span id="inventory-display">Meds: 0 / 3</span>
+                <span id="status-display">Status: Safe</span>
+                <div id="stamina-bar-container"><div id="stamina-bar"></div></div>
+            </div>
+        </div>
+        
+        <div class="hud-center">
+            <div id="distraction-indicator" style="color: #aaa; font-size: 14px; font-weight: bold; margin-bottom: 10px;"></div>
+            <div id="message-banner"></div>
+        </div>
+
+        <div id="phone-notification">
+            <div id="notif-text">Incoming Call...</div>
+            <button id="notif-silence-btn" style="padding: 5px; font-size: 12px; margin-top: 5px;">Silence</button>
+        </div>
+
+        <div id="interaction-container"><button id="action-btn">Interact</button></div>
+
+        <div id="phone-btn"><span>PHONE</span><span id="phone-batt" style="color:red; font-size:10px;">12%</span></div>
+        <div id="sprint-btn">RUN</div>
+    </div>
+
+    <!-- Phone Menu -->
+    <div id="phone-screen">
+        <div class="phone-header"><span>MyPhone</span> <span style="color:red;">12%</span></div>
+        <div class="phone-content">
+            <button class="phone-btn" id="app-cams">Security Cams</button>
+            <button class="phone-btn" id="app-call">Call Killer (Distract)</button>
+            <button class="phone-btn" id="app-poweroff" style="color:#ff5555; margin-top: 20px;">Power Off (Permanent)</button>
+        </div>
+        <button class="phone-btn phone-close" id="phone-close-btn">Put Away</button>
+    </div>
+
+    <!-- Security Camera UI -->
+    <div id="camera-overlay">
+        <div id="cam-info">CAM 01 - REC</div>
+        <div class="cam-controls">
+            <button id="cam-prev">Prev</button>
+            <button id="cam-exit">Exit Cameras</button>
+            <button id="cam-next">Next</button>
+        </div>
+    </div>
+
+    <!-- Struggle Screen -->
+    <div id="struggle-screen" class="overlay">
+        <div id="struggle-title">FIGHT BACK!</div>
+        <p id="struggle-info">Tap repeatedly to knock him down!</p>
+        <div style="width: 80%; height: 30px; background: #333; border: 2px solid #fff; margin: 10px 0;">
+            <div id="struggle-progress" style="width: 0%; height: 100%; background: #00ff00; transition: width 0.1s;"></div>
+        </div>
+        <p style="margin: 0; font-size: 12px;">Time Remaining</p>
+        <div style="width: 80%; height: 10px; background: #111; margin-bottom: 20px;">
+            <div id="struggle-timer-bar" style="width: 100%; height: 100%; background: #fff;"></div>
+        </div>
+        <button id="struggle-tap-btn">TAP!</button>
+    </div>
+
+    <!-- Menus -->
+    <div id="start-screen" class="overlay" style="display: flex;">
+        <h1>DID YOU GET MY MESSAGE?</h1>
+        <p><strong>LEFT SIDE</strong> to Move. <strong>RIGHT SIDE</strong> to Look.<br><br>Find 3 <strong>Medicine Pills</strong> to unlock the Back Exit.<br>Use your <strong>Phone</strong> for cameras, but beware his calls. Shutting it off kills the battery permanently.<br>If caught, you can fight back to stun him, but only <strong>TWICE</strong>. The third catch is fatal.</p>
+        <button id="start-btn">Enter the Nightmare</button>
+    </div>
+    <div id="game-over-screen" class="overlay">
+        <h1 style="font-size: 40px;">CAUGHT</h1><p>You could not escape the nightmare.</p>
+        <button id="restart-btn">Try Again</button>
+    </div>
+    <div id="victory-screen" class="overlay">
+        <h1 style="color: #00cc00;">ESCAPED</h1><p>You got your medicine and survived!</p>
+        <button id="play-again-btn">Play Again</button>
+    </div>
+
+<script>
+// --- Game Constants & Layout ---
+const GAME_STATE = { MENU: 0, PLAYING: 1, HIDDEN: 2, CAMERAS: 3, GAMEOVER: 4, VICTORY: 5, STRUGGLE: 6 };
+let currentState = GAME_STATE.MENU;
+
+const TILE_SIZE = 4;
+const PLAYER_SPEED_NORMAL = 12; 
+const PLAYER_SPEED_SPRINT = 24;
+const PLAYER_SPEED_EXHAUSTED = 5;
+const KILLER_SPEED_PATROL = 6;
+const KILLER_SPEED_CHASE = 12;
+const KILLER_SPEED_DISTRACTED = 9;
+const CHASE_DISTANCE = 45; 
+const TOTAL_PILLS = 3;
+
+// Map Legend: W=Wall, _=Floor, H=Hide, P=Player, S=Killer, M=Pill, E=Exit
+// V=Window, T=TV, R=Thermostat, X=Mailbox, F=Wi-Fi Router, O=OutsideFloor
+const levelLayout = [
+    "_______X____________", // 0
+    "_______O____________", // 1
+    "WWWWWWWW_O_WWWWWWWWW", // 2 (Front door opening)
+    "W____W___H_______S_W", // 3
+    "W_F______W_________W", // 4 (Wi-Fi Router)
+    "W________W____M____W", // 5
+    "WWWWWW_V_WWWWWWWW__W", // 6 (Window)
+    "W_H________________W", // 7
+    "W__________________W", // 8
+    "W_WWWWWWWW_V_WWWW__W", // 9 (Window)
+    "W_W___P__W_R_W_____W", // 10 (Thermostat)
+    "W_W______W___W__M__W", // 11
+    "W_W______W___W__H__W", // 12
+    "W_WWWW_V_W___WWWW__W", // 13 (Window)
+    "W________W_________W", // 14
+    "W_H___M__W_T_______W", // 15 (TV)
+    "WWWWWWWW_E_WWWWWWWWW"  // 16 (Exit)
+];
+const GRID_ROWS = levelLayout.length;
+const GRID_COLS = levelLayout[0].length;
+let gridMap = []; 
+
+// Variables
+let scene, camera, renderer, clock, flashLight, raycaster, mouse;
+let playerMesh, killerMesh, floorMesh;
+let interactables = [];
+
+// AI & Mechanics
+let player = { gridPos:{x:0,z:0}, pills: 0, isHidden: false, lastKnownPos: null, timesCaught: 0 };
+let killer = { gridPos:{x:0,z:0}, path:[], state: 'PATROL', waitTimer: 0, stunTimer: 0, activeDistraction: null, memoryTimer: 0, isFrenzied: false };
+
+let isSprinting = false, isExhausted = false, stamina = 100;
+let headBobTimer = 0;
+
+// Input & Joystick Variables
+let yaw = -Math.PI / 2, pitch = 0; 
+let moveTouchId = null, lookTouchId = null;
+let joyOrigin = { x: 0, y: 0 };
+let joyVector = { x: 0, y: 0 }; // Normalized -1 to +1
+let lastLookX = 0, lastLookY = 0;
+let keys = {}; // Desktop fallback
+
+// Struggle Mechanic
+let struggle = { taps: 0, required: 15, timer: 0, maxTime: 4.0 };
+
+// Phone System
+let phone = { isDead: false, isOpen: false, isRinging: false, ringTimer: 0, eventTimer: 15 };
+
+// Security Cams
+let securityCameras = [];
+let currentCamIndex = 0;
+
+// Audio
+let audioCtx, heartbeatTimer = 0, footstepTimer = 0, breathTimer = 0, isExhaling = false, voiceTimer = 8;
+const killerPhrases = ["I just wanna TALK to YA!", "... Anyways...", "VICK!  VIIICK!", "The Blink's off again!", "It's just my P.M.S.T.D.'s acting up again!", "Drinky drinky drinky, drinky poo...", "I only had a couple, Vick!", "I'm a god-damned war hero!", "OOH-RAH, SEMPER FI", "If you don't eat meat, then what do you eat?", "Chica de madre"];
+
+// UI Elements
+const uiActionBtn = document.getElementById('action-btn');
+const uiMessage = document.getElementById('message-banner');
+const uiVignette = document.getElementById('vignette');
+const uiStaminaBar = document.getElementById('stamina-bar');
+const sprintBtn = document.getElementById('sprint-btn');
+const phoneBtn = document.getElementById('phone-btn');
+const phoneScreen = document.getElementById('phone-screen');
+const phoneNotif = document.getElementById('phone-notification');
+const camOverlay = document.getElementById('camera-overlay');
+const struggleScreen = document.getElementById('struggle-screen');
+const joystickZone = document.getElementById('joystick-zone');
+const joystickKnob = document.getElementById('joystick-knob');
+const gameContainer = document.getElementById('game-container');
+
+// --- Initialization ---
+function init() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020202);
+    scene.fog = new THREE.FogExp2(0x020202, 0.025); 
+
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 150);
+    camera.rotation.order = 'YXZ'; 
+    scene.add(camera);
+    
+    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('game-canvas'), antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    clock = new THREE.Clock(); raycaster = new THREE.Raycaster(); mouse = new THREE.Vector2();
+
+    setupLighting();
+    buildLevel();
+    setupCameras();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    // Inputs
+    gameContainer.addEventListener('touchstart', handleTouchStart, {passive: false});
+    gameContainer.addEventListener('touchmove', handleTouchMove, {passive: false});
+    gameContainer.addEventListener('touchend', handleTouchEnd);
+    gameContainer.addEventListener('touchcancel', handleTouchEnd);
+
+    // Desktop Fallback Inputs
+    gameContainer.addEventListener('mousedown', (e) => {
+        if(currentState !== GAME_STATE.PLAYING) return;
+        lookTouchId = 'mouse'; lastLookX = e.clientX; lastLookY = e.clientY;
+    });
+    gameContainer.addEventListener('mousemove', (e) => {
+        if(lookTouchId === 'mouse') {
+            yaw -= (e.clientX - lastLookX) * 0.005; pitch -= (e.clientY - lastLookY) * 0.005;
+            pitch = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, pitch));
+            camera.rotation.set(pitch, yaw, 0); lastLookX = e.clientX; lastLookY = e.clientY;
+        }
+    });
+    gameContainer.addEventListener('mouseup', () => lookTouchId = null);
+    gameContainer.addEventListener('mouseleave', () => lookTouchId = null);
+    window.addEventListener('keydown', e => keys[e.code] = true);
+    window.addEventListener('keyup', e => keys[e.code] = false);
+    
+    document.getElementById('start-btn').addEventListener('click', () => { initAudio(); startGame(); });
+    document.getElementById('restart-btn').addEventListener('click', resetGame);
+    document.getElementById('play-again-btn').addEventListener('click', resetGame);
+    document.getElementById('struggle-tap-btn').addEventListener('pointerdown', handleStruggleTap);
+
+    // Sprint
+    sprintBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); isSprinting = true; sprintBtn.classList.add('active'); });
+    ['pointerup','pointerleave','pointercancel'].forEach(ev => sprintBtn.addEventListener(ev, (e) => { e.preventDefault(); isSprinting = false; sprintBtn.classList.remove('active'); }));
+
+    // Phone & Cams
+    phoneBtn.addEventListener('click', togglePhone);
+    document.getElementById('phone-close-btn').addEventListener('click', togglePhone);
+    document.getElementById('app-poweroff').addEventListener('click', powerOffPhone);
+    document.getElementById('notif-silence-btn').addEventListener('click', silencePhone);
+    document.getElementById('app-call').addEventListener('click', callKiller);
+    document.getElementById('app-cams').addEventListener('click', openCameras);
+    document.getElementById('cam-exit').addEventListener('click', closeCameras);
+    document.getElementById('cam-next').addEventListener('click', () => switchCamera(1));
+    document.getElementById('cam-prev').addEventListener('click', () => switchCamera(-1));
+
+    animate();
+}
+
+// --- Touch Joystick Handlers ---
+function handleTouchStart(e) {
+    if(currentState !== GAME_STATE.PLAYING) return;
+    e.preventDefault();
+    for(let i=0; i<e.changedTouches.length; i++) {
+        let touch = e.changedTouches[i];
+        if (touch.clientX < window.innerWidth / 2 && moveTouchId === null) {
+            moveTouchId = touch.identifier;
+            joyOrigin.x = touch.clientX; joyOrigin.y = touch.clientY;
+            joystickZone.style.left = (touch.clientX) + 'px';
+            joystickZone.style.top = (touch.clientY) + 'px';
+            joystickZone.style.display = 'block';
+            joystickKnob.style.transform = `translate(0px, 0px)`;
+        } else if (touch.clientX >= window.innerWidth / 2 && lookTouchId === null) {
+            lookTouchId = touch.identifier;
+            lastLookX = touch.clientX; lastLookY = touch.clientY;
+        }
+    }
+}
+function handleTouchMove(e) {
+    if(currentState !== GAME_STATE.PLAYING) return;
+    e.preventDefault();
+    for(let i=0; i<e.changedTouches.length; i++) {
+        let touch = e.changedTouches[i];
+        if (touch.identifier === moveTouchId) {
+            let dx = touch.clientX - joyOrigin.x; let dy = touch.clientY - joyOrigin.y;
+            let dist = Math.hypot(dx, dy); let maxDist = 50;
+            if (dist > maxDist) { dx = (dx/dist)*maxDist; dy = (dy/dist)*maxDist; }
+            joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+            joyVector.x = dx / maxDist; joyVector.y = dy / maxDist; 
+        } else if (touch.identifier === lookTouchId) {
+            yaw -= (touch.clientX - lastLookX) * 0.005; pitch -= (touch.clientY - lastLookY) * 0.005;
+            pitch = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, pitch));
+            camera.rotation.set(pitch, yaw, 0); lastLookX = touch.clientX; lastLookY = touch.clientY;
+        }
+    }
+}
+function handleTouchEnd(e) {
+    for(let i=0; i<e.changedTouches.length; i++) {
+        let touch = e.changedTouches[i];
+        if (touch.identifier === moveTouchId) {
+            moveTouchId = null; joyVector.x = 0; joyVector.y = 0; joystickZone.style.display = 'none';
+        } else if (touch.identifier === lookTouchId) {
+            lookTouchId = null;
+        }
+    }
+}
+
+function initAudio() {
+    if(!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (window.speechSynthesis) { let u = new SpeechSynthesisUtterance(''); u.volume = 0; window.speechSynthesis.speak(u); }
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function setupLighting() {
+    scene.add(new THREE.AmbientLight(0x444455, 1.2)); 
+    flashLight = new THREE.SpotLight(0xffeedd, 3.5); 
+    flashLight.angle = Math.PI / 4; flashLight.penumbra = 0.5; flashLight.distance = 90;
+    flashLight.castShadow = true; flashLight.shadow.bias = -0.001;
+    camera.add(flashLight); flashLight.position.set(0, 0, 0); flashLight.target.position.set(0, 0, -1); camera.add(flashLight.target);
+    const killerGlow = new THREE.PointLight(0xff0000, 1.5, 20); killerGlow.name = "killerGlow"; scene.add(killerGlow);
+}
+
+function buildLevel() {
+    for(let r=0; r<GRID_ROWS; r++) {
+        let row = []; for(let c=0; c<GRID_COLS; c++) row.push(0); gridMap.push(row);
+    }
+    const wallGeo = new THREE.BoxGeometry(TILE_SIZE, TILE_SIZE*2.5, TILE_SIZE);
+    const wallMat = new THREE.MeshLambertMaterial({ color: 0x555555 }); 
+    const floorGeo = new THREE.PlaneGeometry(GRID_COLS * TILE_SIZE, GRID_ROWS * TILE_SIZE);
+    
+    floorMesh = new THREE.Mesh(floorGeo, new THREE.MeshLambertMaterial({ color: 0x333333 })); 
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.set((GRID_COLS*TILE_SIZE)/2 - TILE_SIZE/2, 0, (GRID_ROWS*TILE_SIZE)/2 - TILE_SIZE/2);
+    floorMesh.receiveShadow = true; floorMesh.name = "Floor"; scene.add(floorMesh);
+
+    for(let r=0; r<GRID_ROWS; r++) {
+        for(let c=0; c<GRID_COLS; c++) {
+            let char = levelLayout[r][c];
+            let x = c * TILE_SIZE, z = r * TILE_SIZE;
+
+            if(char === 'W') {
+                gridMap[r][c] = 1; 
+                let wall = new THREE.Mesh(wallGeo, wallMat);
+                wall.position.set(x, TILE_SIZE*1.25, z); wall.castShadow = true; wall.receiveShadow = true; scene.add(wall);
+            } 
+            else if(char === 'P') { player.gridPos = {x: c, z: r}; createPlayer(x, z); }
+            else if(char === 'S') { killer.gridPos = {x: c, z: r}; createKiller(x, z); }
+            else if(char === 'H') { gridMap[r][c] = 1; createInteractable(x, z, 'HIDE', 0x5c4033, new THREE.BoxGeometry(TILE_SIZE*0.8, TILE_SIZE*1.5, TILE_SIZE*0.8)); }
+            else if(char === 'M') { createInteractable(x, z, 'PILL', 0x00ffff, new THREE.SphereGeometry(0.3, 16, 16)); }
+            else if(char === 'E') { gridMap[r][c] = 1; createInteractable(x, z, 'EXIT', 0x008800, new THREE.BoxGeometry(TILE_SIZE, TILE_SIZE*1.8, TILE_SIZE*0.2)); }
+            else if(char === 'V') { 
+                gridMap[r][c] = 1; 
+                let winMesh = createInteractable(x, z, 'WINDOW', 0x88ccff, new THREE.BoxGeometry(TILE_SIZE, TILE_SIZE*1.5, TILE_SIZE*0.2));
+                winMesh.material.transparent = true; winMesh.material.opacity = 0.4; winMesh.userData.isOpen = true; winMesh.userData.isWindow = true;
+            }
+            else if(char === 'T') { gridMap[r][c] = 1; createInteractable(x, z, 'TV', 0x111111, new THREE.BoxGeometry(TILE_SIZE*0.8, TILE_SIZE, TILE_SIZE*0.4)); }
+            else if(char === 'R') { gridMap[r][c] = 1; createInteractable(x, z, 'THERMOSTAT', 0xeeeeee, new THREE.BoxGeometry(1, 1, 0.2)); }
+            else if(char === 'X') { gridMap[r][c] = 1; createInteractable(x, z, 'MAILBOX', 0x2244aa, new THREE.BoxGeometry(1, 2, 1)); }
+            else if(char === 'F') { gridMap[r][c] = 1; createInteractable(x, z, 'WIFI', 0x00ff00, new THREE.BoxGeometry(0.8, 0.8, 0.4)); }
+        }
+    }
+}
+
+function createPlayer(x, z) {
+    playerMesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 16), new THREE.MeshLambertMaterial({ color: 0x4444ff })); 
+    playerMesh.position.set(x, 2, z); playerMesh.visible = false; scene.add(playerMesh);
+}
+
+function createKiller(x, z) {
+    killerMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 6, 16), new THREE.MeshLambertMaterial({ color: 0xcc0000 }));
+    killerMesh.position.set(x, 3, z); killerMesh.castShadow = true; scene.add(killerMesh);
+}
+
+function createInteractable(x, z, type, colorHex, geometry) {
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: colorHex }));
+    if(type === 'PILL') { mesh.scale.set(1, 1.8, 1); mesh.position.set(x, 1, z); mesh.rotation.x = Math.PI/2; } 
+    else if(type === 'THERMOSTAT') { mesh.position.set(x, TILE_SIZE, z); } 
+    else if(type === 'WIFI') { mesh.position.set(x, TILE_SIZE*0.8, z); }
+    else { mesh.position.set(x, TILE_SIZE/2, z); }
+    mesh.castShadow = true; scene.add(mesh);
+    interactables.push({ type: type, mesh: mesh, x: x, z: z, active: true });
+    return mesh;
+}
+
+function setupCameras() {
+    securityCameras = [
+        { name: "CAM 1 - Front Yard", pos: new THREE.Vector3(20, 15, 12), rot: new THREE.Euler(-0.5, 0.5, 0, 'YXZ') },
+        { name: "CAM 2 - Main Hall", pos: new THREE.Vector3(30, 12, 30), rot: new THREE.Euler(-0.3, -1.5, 0, 'YXZ') },
+        { name: "CAM 3 - Living Room", pos: new THREE.Vector3(40, 12, 50), rot: new THREE.Euler(-0.4, 3.14, 0, 'YXZ') }
+    ];
+}
+
+// --- Pathfinding (Killer Only) & Collision ---
+function getNeighbors(node) {
+    let dirs = [[0,1], [1,0], [0,-1], [-1,0]], results = [];
+    for(let d of dirs) {
+        let nx = node.x + d[0], nz = node.z + d[1];
+        if(nx >= 0 && nx < GRID_COLS && nz >= 0 && nz < GRID_ROWS && gridMap[nz][nx] === 0) results.push({x: nx, z: nz});
+    } return results;
+}
+
+function findPath(start, goal) {
+    let queue = [start], cameFrom = new Map(); cameFrom.set(`${start.x},${start.z}`, null);
+    let found = false;
+    while(queue.length > 0) {
+        let current = queue.shift();
+        if(current.x === goal.x && current.z === goal.z) { found = true; break; }
+        for(let next of getNeighbors(current)) {
+            let key = `${next.x},${next.z}`;
+            if(!cameFrom.has(key)) { queue.push(next); cameFrom.set(key, current); }
+        }
+    }
+    if(!found) return []; 
+    let current = goal, path = [];
+    while(current != null) { path.push(current); current = cameFrom.get(`${current.x},${current.z}`); }
+    path.reverse(); path.shift(); return path;
+}
+
+// Box Collision for Free Movement
+function canMoveTo(x, z, radius) {
+    let minC = Math.floor((x - radius + TILE_SIZE/2) / TILE_SIZE);
+    let maxC = Math.floor((x + radius + TILE_SIZE/2) / TILE_SIZE);
+    let minR = Math.floor((z - radius + TILE_SIZE/2) / TILE_SIZE);
+    let maxR = Math.floor((z + radius + TILE_SIZE/2) / TILE_SIZE);
+
+    for (let r = minR; r <= maxR; r++) {
+        for (let c = minC; c <= maxC; c++) {
+            if (r < 0 || r >= GRID_ROWS || c < 0 || c >= GRID_COLS) return false;
+            if (gridMap[r][c] === 1) return false;
+        }
+    } return true;
+}
+
+function worldToGrid(x, z) { return { x: Math.round(x / TILE_SIZE), z: Math.round(z / TILE_SIZE) }; }
+function gridToWorld(gx, gz) { return { x: gx * TILE_SIZE, z: gz * TILE_SIZE }; }
+
+// --- Audio ---
+function triggerSynthSound(freqStart, freqEnd, type, duration, vol) {
+    if(!audioCtx || audioCtx.state !== 'running') return;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.connect(gain); gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    osc.frequency.setValueAtTime(freqStart, t);
+    if(freqStart !== freqEnd) osc.frequency.exponentialRampToValueAtTime(freqEnd, t + duration);
+    gain.gain.setValueAtTime(vol, t); gain.gain.exponentialRampToValueAtTime(0.01, t + duration);
+    osc.start(t); osc.stop(t + duration);
+}
+
+function playPhoneRing() { triggerSynthSound(800, 800, 'square', 0.2, 0.1); setTimeout(() => triggerSynthSound(800, 800, 'square', 0.2, 0.1), 250); }
+function playTextBeep() { triggerSynthSound(1200, 1200, 'sine', 0.1, 0.1); setTimeout(() => triggerSynthSound(1500, 1500, 'sine', 0.1, 0.1), 150); }
+function triggerHeartbeat(volume) { triggerSynthSound(100, 0.01, 'sine', 0.3, volume); setTimeout(()=>triggerSynthSound(100, 0.01, 'sine', 0.3, volume*0.8), 150); }
+function triggerFootstep(volume) {
+    if(!audioCtx || audioCtx.state !== 'running') return;
+    const bufferSize = audioCtx.sampleRate * 0.2; const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+    const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 350; 
+    const gain = audioCtx.createGain(); noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime; gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(volume * 1.5, t + 0.05); gain.gain.linearRampToValueAtTime(0, t + 0.2);
+    noise.start(t);
+}
+function triggerBreath(duration, volume, isExhale) {
+    if(!audioCtx || audioCtx.state !== 'running') return;
+    const bufferSize = audioCtx.sampleRate * duration; const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+    const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = isExhale ? 600 : 900; filter.Q.value = 0.5;
+    const gain = audioCtx.createGain(); noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime; gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(volume, t + duration * 0.4); gain.gain.linearRampToValueAtTime(0, t + duration);
+    noise.start(t);
+}
+function playKillerVoiceLine(dist) {
+    if (!window.speechSynthesis || dist > 60) return;
+    const msg = new SpeechSynthesisUtterance(killerPhrases[Math.floor(Math.random() * killerPhrases.length)]);
+    msg.volume = Math.max(0.1, Math.min(1, 1.0 - (dist / 60))); msg.pitch = killer.isFrenzied ? 0.8 : 0.6; msg.rate = killer.isFrenzied ? 1.2 : 0.9;
+    window.speechSynthesis.speak(msg);
+}
+
+// --- Struggle Mechanic ---
+function startStruggle() {
+    currentState = GAME_STATE.STRUGGLE; struggle.taps = 0; struggle.timer = struggle.maxTime;
+    document.getElementById('struggle-info').innerText = `Tap repeatedly to knock him down! (Strikes: ${player.timesCaught}/3)`;
+    document.getElementById('struggle-progress').style.width = '0%'; document.getElementById('struggle-timer-bar').style.width = '100%';
+    struggleScreen.style.display = 'flex'; uiVignette.classList.add('blood-vignette');
+}
+function handleStruggleTap() {
+    if(currentState !== GAME_STATE.STRUGGLE) return;
+    struggle.taps++;
+    document.getElementById('struggle-progress').style.width = Math.min((struggle.taps / struggle.required) * 100, 100) + '%';
+    if(struggle.taps >= struggle.required) winStruggle();
+}
+function winStruggle() {
+    struggleScreen.style.display = 'none'; currentState = GAME_STATE.PLAYING; killer.state = 'STUNNED'; killer.stunTimer = 5.0;
+    killerMesh.rotation.x = Math.PI / 2; killerMesh.position.y = 1.5;
+    showMessage("You knocked him down! RUN!"); uiVignette.classList.remove('blood-vignette');
+    stamina = Math.max(stamina, 60); isExhausted = false; 
+    joyVector.x = 0; joyVector.y = 0; moveTouchId = null; joystickZone.style.display = 'none'; // reset inputs
+}
+function failStruggle() { struggleScreen.style.display = 'none'; loseGame(); }
+
+// --- Phone Mechanics ---
+function togglePhone() {
+    if (phone.isDead || currentState === GAME_STATE.CAMERAS || currentState === GAME_STATE.STRUGGLE) return;
+    phone.isOpen = !phone.isOpen; phoneScreen.style.display = phone.isOpen ? 'flex' : 'none';
+}
+function powerOffPhone() {
+    phone.isDead = true; phone.isOpen = false; phone.isRinging = false;
+    phoneScreen.style.display = 'none'; phoneBtn.style.opacity = '0.3'; phoneBtn.innerHTML = 'DEAD';
+    phoneNotif.style.display = 'none'; showMessage("Phone permanently disabled.");
+}
+function silencePhone() { phone.isRinging = false; phoneNotif.style.display = 'none'; }
+function callKiller() {
+    if (phone.isDead) return; togglePhone(); showMessage("Dialing...");
+    setTimeout(() => {
+        if(killer.state !== 'CHASE' && killer.state !== 'STUNNED') {
+            killer.activeDistraction = { pos: null, type: 'PHONE' }; killer.waitTimer = 5.0; showMessage("You hear a phone ringing in the distance...");
+        }
+    }, 1500);
+}
+function triggerPhoneEvent() {
+    if (phone.isDead || currentState !== GAME_STATE.PLAYING) return;
+    if(Math.random() > 0.5) {
+        phone.isRinging = true; phone.ringTimer = 8;
+        document.getElementById('notif-text').innerText = "Incoming Call: UNKNOWN"; phoneNotif.style.display = 'block';
+    } else {
+        playTextBeep(); document.getElementById('notif-text').innerText = "Text: I see you...";
+        phoneNotif.style.display = 'block'; setTimeout(() => phoneNotif.style.display = 'none', 3000);
+    }
+}
+
+// --- Cameras ---
+function openCameras() {
+    if (phone.isDead) return; togglePhone(); currentState = GAME_STATE.CAMERAS; camOverlay.style.display = 'flex'; setCameraView(0);
+}
+function switchCamera(dir) { currentCamIndex = (currentCamIndex + dir + securityCameras.length) % securityCameras.length; setCameraView(currentCamIndex); }
+function setCameraView(index) {
+    let camData = securityCameras[index]; document.getElementById('cam-info').innerText = camData.name + " - REC";
+    camera.position.copy(camData.pos); camera.rotation.copy(camData.rot);
+}
+function closeCameras() {
+    currentState = GAME_STATE.PLAYING; camOverlay.style.display = 'none';
+    camera.position.set(playerMesh.position.x, player.isHidden ? 1.0 : 3.0, playerMesh.position.z); camera.rotation.set(pitch, yaw, 0);
+}
+
+// --- Interactions ---
+function checkInteractions() {
+    if(currentState !== GAME_STATE.PLAYING && currentState !== GAME_STATE.HIDDEN) return;
+    if(currentState === GAME_STATE.HIDDEN) { uiActionBtn.style.display = 'block'; uiActionBtn.innerText = "Exit Hiding"; uiActionBtn.onclick = unhidePlayer; return; }
+
+    let nearest = null, minDist = 8; 
+    for(let item of interactables) {
+        if(!item.active) continue;
+        let dist = Math.hypot(playerMesh.position.x - item.x, playerMesh.position.z - item.z);
+        if(dist < minDist) { minDist = dist; nearest = item; }
+    }
+
+    if(nearest) {
+        uiActionBtn.style.display = 'block';
+        if(nearest.type === 'PILL') { uiActionBtn.innerText = "Take Medicine"; uiActionBtn.onclick = () => { nearest.active = false; scene.remove(nearest.mesh); player.pills++; document.getElementById('inventory-display').innerText = `Meds: ${player.pills} / ${TOTAL_PILLS}`; checkInteractions(); showMessage(player.pills >= TOTAL_PILLS ? "Got all medicine! Escape!" : "Found a pill."); }; } 
+        else if (nearest.type === 'HIDE') { uiActionBtn.innerText = "Hide"; uiActionBtn.onclick = () => { currentState = GAME_STATE.HIDDEN; player.isHidden = true; document.getElementById('status-display').innerText = "Status: HIDING"; showMessage("You are hiding..."); joyVector.x=0; joyVector.y=0; }; } 
+        else if (nearest.type === 'EXIT') { uiActionBtn.innerText = player.pills >= TOTAL_PILLS ? "Escape" : "Locked (Need All Meds)"; uiActionBtn.onclick = player.pills >= TOTAL_PILLS ? winGame : null; }
+        else if (nearest.type === 'WINDOW') { uiActionBtn.innerText = nearest.mesh.userData.isOpen ? "Close Blinds" : "Open Blinds"; uiActionBtn.onclick = () => { nearest.mesh.userData.isOpen = !nearest.mesh.userData.isOpen; nearest.mesh.material.opacity = nearest.mesh.userData.isOpen ? 0.4 : 1.0; nearest.mesh.material.color.setHex(nearest.mesh.userData.isOpen ? 0x88ccff : 0x5c4033); showMessage(nearest.mesh.userData.isOpen ? "Blinds open." : "Blinds closed. Safe from outside eyes."); checkInteractions(); }; }
+        else if (nearest.type === 'TV') { uiActionBtn.innerText = "Turn On TV (Distract)"; uiActionBtn.onclick = () => triggerDistraction('TV', nearest); }
+        else if (nearest.type === 'THERMOSTAT') { uiActionBtn.innerText = "Mess with Thermostat"; uiActionBtn.onclick = () => triggerDistraction('THERMOSTAT', nearest); }
+        else if (nearest.type === 'MAILBOX') { uiActionBtn.innerText = "Raise Mail Flag"; uiActionBtn.onclick = () => triggerDistraction('MAILBOX', nearest); }
+        else if (nearest.type === 'WIFI') { uiActionBtn.innerText = "Disconnect Wi-Fi (Frenzy)"; uiActionBtn.onclick = () => { nearest.active = false; nearest.mesh.material.color.setHex(0x333333); triggerDistraction('WIFI', nearest); checkInteractions(); }; }
+    } else { uiActionBtn.style.display = 'none'; uiActionBtn.onclick = null; }
+}
+
+function unhidePlayer() { currentState = GAME_STATE.PLAYING; player.isHidden = false; document.getElementById('status-display').innerText = "Status: Safe"; checkInteractions(); }
+function showMessage(text) { uiMessage.innerText = text; uiMessage.style.opacity = 1; setTimeout(() => uiMessage.style.opacity = 0, 2500); }
+
+function triggerDistraction(type, item) {
+    if(killer.state === 'CHASE' || killer.state === 'STUNNED') return; 
+    killer.activeDistraction = { pos: worldToGrid(item.x, item.z), type: type };
+    if (type === 'WIFI') {
+        killer.isFrenzied = true; showMessage("Wi-Fi disconnected! He's ENRAGED!");
+        document.getElementById('distraction-indicator').innerText = `Distraction: WIFI (FRENZY!)`; document.getElementById('distraction-indicator').style.color = "#ff0000";
+    } else {
+        showMessage(`Triggered ${type}!`);
+        document.getElementById('distraction-indicator').innerText = `Distraction Active: ${type}`; document.getElementById('distraction-indicator').style.color = "#aaa";
+    }
+}
+
+// Killer Only Movement
+function moveEntityAlongPath(entity, entityMesh, speed, dt) {
+    if(entity.path.length > 0) {
+        let nextNode = entity.path[0], targetWorld = gridToWorld(nextNode.x, nextNode.z);
+        let dx = targetWorld.x - entityMesh.position.x, dz = targetWorld.z - entityMesh.position.z, dist = Math.hypot(dx, dz);
+        if(dist < 0.5) { entityMesh.position.x = targetWorld.x; entityMesh.position.z = targetWorld.z; entity.path.shift(); entity.gridPos = nextNode; } 
+        else {
+            let moveAmt = Math.min(speed * dt, dist);
+            entityMesh.position.x += (dx / dist) * moveAmt; entityMesh.position.z += (dz / dist) * moveAmt;
+            entityMesh.lookAt(new THREE.Vector3(targetWorld.x, entityMesh.position.y, targetWorld.z));
+        }
+    }
+}
+
+// --- Killer AI ---
+function updateKillerAI(dt) {
+    if (killer.state === 'STUNNED') {
+        killer.stunTimer -= dt;
+        if(killer.stunTimer <= 0) {
+            killer.state = 'SEARCH'; killerMesh.rotation.x = 0; killerMesh.position.y = 3; killer.memoryTimer = 6.0;
+        }
+        const kLight = scene.getObjectByName("killerGlow"); if(kLight) { kLight.position.copy(killerMesh.position); kLight.position.y += 1; } return; 
+    }
+
+    if(currentState !== GAME_STATE.PLAYING && currentState !== GAME_STATE.HIDDEN && currentState !== GAME_STATE.CAMERAS) return;
+
+    let activePatrolSpeed = killer.isFrenzied ? 12 : KILLER_SPEED_PATROL;
+    let activeChaseSpeed = killer.isFrenzied ? 18 : KILLER_SPEED_CHASE;
+    let activeDistractSpeed = killer.isFrenzied ? 18 : KILLER_SPEED_DISTRACTED;
+
+    let distToPlayer = Math.hypot(killerMesh.position.x - playerMesh.position.x, killerMesh.position.z - playerMesh.position.z);
+    let canSeePlayer = !player.isHidden && distToPlayer < CHASE_DISTANCE;
+    
+    if(canSeePlayer) {
+        let dir = new THREE.Vector3().subVectors(playerMesh.position, killerMesh.position).normalize();
+        raycaster.set(killerMesh.position, dir);
+        let intersects = raycaster.intersectObjects(scene.children);
+        let hitWall = false;
+        for(let i=0; i<intersects.length; i++) {
+            let obj = intersects[i].object;
+            if(obj.name === "Floor" || obj === killerMesh || obj === playerMesh || obj.name === "killerGlow") continue;
+            if(obj.userData.isWindow && obj.userData.isOpen) continue;
+            if(intersects[i].distance < distToPlayer) { hitWall = true; break; }
+        }
+        canSeePlayer = !hitWall;
+    }
+
+    if(phone.isRinging && distToPlayer < 30 && killer.state !== 'CHASE') canSeePlayer = true; 
+
+    if(canSeePlayer) {
+        if(killer.state !== 'CHASE') { showMessage("HE SPOTTED YOU!"); uiVignette.classList.add('blood-vignette'); document.getElementById('status-display').innerText = "Status: PURSUED!"; document.getElementById('status-display').style.color = "#ff0000"; }
+        killer.state = 'CHASE'; killer.activeDistraction = null; 
+        if(!killer.isFrenzied) document.getElementById('distraction-indicator').innerText = '';
+        player.lastKnownPos = worldToGrid(playerMesh.position.x, playerMesh.position.z);
+        let kGrid = worldToGrid(killerMesh.position.x, killerMesh.position.z);
+        if(killer.path.length === 0 || (killer.path[killer.path.length-1].x !== player.lastKnownPos.x || killer.path[killer.path.length-1].z !== player.lastKnownPos.z)) {
+            killer.path = findPath(kGrid, player.lastKnownPos);
+        }
+        moveEntityAlongPath(killer, killerMesh, activeChaseSpeed, dt);
+        
+        if(distToPlayer < TILE_SIZE) {
+            player.timesCaught++;
+            if(player.timesCaught >= 3) loseGame(); else startStruggle(); 
+        }
+    } 
+    else {
+        if(killer.state === 'CHASE') {
+            killer.state = 'SEARCH'; killer.memoryTimer = 6.0; 
+            uiVignette.classList.remove('blood-vignette'); document.getElementById('status-display').innerText = player.isHidden ? "Status: HIDING" : "Status: Safe"; document.getElementById('status-display').style.color = "#fff";
+        }
+        else if(killer.state === 'SEARCH') {
+            killer.memoryTimer -= dt;
+            if(killer.memoryTimer <= 0) { killer.state = 'PATROL'; killer.waitTimer = 2; }
+            else if(killer.path.length > 0) moveEntityAlongPath(killer, killerMesh, activeChaseSpeed, dt);
+            else { killer.waitTimer -= dt; if(killer.waitTimer <= 0) killer.state = 'PATROL'; }
+        }
+        else {
+            if(killer.waitTimer > 0) {
+                killer.waitTimer -= dt; 
+                if(killer.waitTimer <= 0 && killer.activeDistraction && killer.activeDistraction.type === 'PHONE') { killer.activeDistraction = null; }
+            } else if(killer.activeDistraction && killer.activeDistraction.pos) {
+                if(killer.path.length === 0 || killer.path[killer.path.length-1].x !== killer.activeDistraction.pos.x) {
+                    killer.path = findPath(worldToGrid(killerMesh.position.x, killerMesh.position.z), killer.activeDistraction.pos);
+                }
+                moveEntityAlongPath(killer, killerMesh, activeDistractSpeed, dt);
+                if(killer.path.length === 0) { killer.waitTimer = 3; killer.activeDistraction = null; if(!killer.isFrenzied) document.getElementById('distraction-indicator').innerText = ''; }
+            } else {
+                if(killer.path.length === 0) {
+                    let rx = Math.floor(Math.random() * GRID_COLS), rz = Math.floor(Math.random() * GRID_ROWS);
+                    if(gridMap[rz][rx] === 0) { killer.path = findPath(worldToGrid(killerMesh.position.x, killerMesh.position.z), {x: rx, z: rz}); killer.waitTimer = 2 + Math.random() * 3; }
+                } else moveEntityAlongPath(killer, killerMesh, activePatrolSpeed, dt);
+            }
+        }
+    }
+    
+    const kLight = scene.getObjectByName("killerGlow");
+    if(kLight) { kLight.position.copy(killerMesh.position); kLight.position.y += 2; }
+}
+
+// --- Game Loop ---
+function animate() {
+    requestAnimationFrame(animate); let dt = Math.min(clock.getDelta(), 0.1); 
+
+    if (currentState === GAME_STATE.STRUGGLE) {
+        struggle.timer -= dt;
+        document.getElementById('struggle-timer-bar').style.width = Math.max(0, (struggle.timer / struggle.maxTime) * 100) + '%';
+        if (struggle.timer <= 0) failStruggle();
+        renderer.render(scene, camera); return; 
+    }
+
+    if(currentState === GAME_STATE.PLAYING || currentState === GAME_STATE.HIDDEN || currentState === GAME_STATE.CAMERAS) {
+        
+        // Player Input Mapping (Joystick + Keyboard)
+        let inputX = joyVector.x, inputY = joyVector.y;
+        if(keys['KeyW']) inputY -= 1; if(keys['KeyS']) inputY += 1;
+        if(keys['KeyA']) inputX -= 1; if(keys['KeyD']) inputX += 1;
+        let len = Math.hypot(inputX, inputY);
+        if(len > 1) { inputX /= len; inputY /= len; }
+        
+        let isMoving = (inputX !== 0 || inputY !== 0) && !player.isHidden && currentState !== GAME_STATE.CAMERAS;
+
+        // Stamina
+        let currentSpeed = PLAYER_SPEED_NORMAL;
+        if (isExhausted) {
+            currentSpeed = PLAYER_SPEED_EXHAUSTED + ((stamina / 100) * (PLAYER_SPEED_NORMAL - PLAYER_SPEED_EXHAUSTED));
+            stamina += 15 * dt; if (stamina >= 100) { stamina = 100; isExhausted = false; }
+        } else if (isSprinting && isMoving) {
+            currentSpeed = PLAYER_SPEED_SPRINT; stamina -= 30 * dt;
+            if (stamina <= 0) { stamina = 0; isExhausted = true; isSprinting = false; sprintBtn.classList.remove('active'); }
+        } else { stamina = Math.min(stamina + 15 * dt, 100); }
+
+        uiStaminaBar.style.width = stamina + '%';
+        uiStaminaBar.style.backgroundColor = isExhausted ? '#ff0000' : (stamina < 30 ? '#ffaa00' : '#00ff00');
+
+        // Free Player Movement via Velocity Vector
+        if (isMoving) {
+            let forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+            let right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+            
+            let moveDir = new THREE.Vector3()
+                .addScaledVector(forward, -inputY)
+                .addScaledVector(right, inputX)
+                .normalize();
+
+            let moveSpeed = currentSpeed * dt;
+            let nextX = playerMesh.position.x + moveDir.x * moveSpeed;
+            let nextZ = playerMesh.position.z + moveDir.z * moveSpeed;
+            let radius = 1.0;
+
+            if (canMoveTo(nextX, playerMesh.position.z, radius)) playerMesh.position.x = nextX;
+            if (canMoveTo(playerMesh.position.x, nextZ, radius)) playerMesh.position.z = nextZ;
+            
+            player.gridPos = worldToGrid(playerMesh.position.x, playerMesh.position.z);
+            headBobTimer += moveSpeed * 0.5;
+        }
+
+        updateKillerAI(dt);
+        if(currentState !== GAME_STATE.CAMERAS) checkInteractions();
+
+        for(let item of interactables) if(item.active && item.type === 'PILL') { item.mesh.rotation.z += 2 * dt; item.mesh.rotation.y += 1 * dt; }
+
+        // Audio
+        let distToPlayer = Math.hypot(killerMesh.position.x - playerMesh.position.x, killerMesh.position.z - playerMesh.position.z);
+        heartbeatTimer -= dt;
+        if(heartbeatTimer <= 0) {
+            let hbVolume = distToPlayer < 40 ? 0.05 + ((1 - distToPlayer/40) * 0.95) : 0.05;
+            let hbInterval = distToPlayer < 40 ? 1.2 - ((1 - distToPlayer/40) * 0.9) + (Math.random()*0.2-0.1) : 1.2;
+            triggerHeartbeat(hbVolume); heartbeatTimer = hbInterval;
+        }
+
+        if (distToPlayer < 30) {
+            footstepTimer -= dt;
+            if(footstepTimer <= 0) { triggerFootstep(1 - distToPlayer/30); footstepTimer = killer.state === 'CHASE' ? 0.4 : 0.6; }
+        }
+
+        breathTimer -= dt;
+        if (breathTimer <= 0 && !player.isHidden) {
+            let bRate = isExhausted ? 0.4 : (isSprinting && isMoving ? 0.7 : 1.6);
+            let bVol = isExhausted ? 0.12 : (isSprinting && isMoving ? 0.06 : 0.02);
+            triggerBreath(bRate, bVol, isExhaling); isExhaling = !isExhaling; breathTimer = bRate + 0.1;
+        }
+
+        voiceTimer -= dt; 
+        if (voiceTimer <= 0 && killer.state !== 'STUNNED') { 
+            playKillerVoiceLine(distToPlayer); 
+            voiceTimer = killer.isFrenzied ? (4 + Math.random() * 3) : (10 + Math.random() * 5); 
+        }
+
+        if(!phone.isDead) {
+            phone.eventTimer -= dt;
+            if(phone.eventTimer <= 0) { triggerPhoneEvent(); phone.eventTimer = 20 + Math.random() * 20; }
+            if(phone.isRinging) {
+                phone.ringTimer -= dt;
+                if(phone.ringTimer <= 0) silencePhone();
+                else if(Math.floor(phone.ringTimer*4) % 2 === 0) playPhoneRing(); 
+            }
+        }
+
+        // Camera Update
+        if(currentState !== GAME_STATE.CAMERAS) {
+            camera.position.x = playerMesh.position.x; camera.position.z = playerMesh.position.z;
+            let bobY = isMoving ? Math.sin(headBobTimer) * 0.3 : 0;
+            camera.position.y += ((player.isHidden ? 1.0 : 3.0) + bobY - camera.position.y) * 10 * dt; 
+        }
+
+        if(killer.state !== 'CHASE' && killer.state !== 'STUNNED' && !player.isHidden) {
+             uiVignette.style.boxShadow = distToPlayer < 25 ? `0 0 ${150 + (1-distToPlayer/25)*120}px rgba(0,0,0,0.8) inset` : `0 0 150px rgba(0,0,0,0.5) inset`;
+        }
+    }
+
+    renderer.render(scene, camera);
+}
+
+// --- State Management ---
+function startGame() {
+    document.getElementById('start-screen').style.display = 'none';
+    currentState = GAME_STATE.PLAYING; voiceTimer = 3; phone.eventTimer = 15; clock.start();
+    camera.position.set(playerMesh.position.x, 3.0, playerMesh.position.z);
+    yaw = -Math.PI / 2; pitch = 0; camera.rotation.set(pitch, yaw, 0); 
+}
+
+function loseGame() { currentState = GAME_STATE.GAMEOVER; document.getElementById('game-over-screen').style.display = 'flex'; uiVignette.classList.add('blood-vignette'); closeCameras(); phoneScreen.style.display='none'; struggleScreen.style.display='none'; }
+function winGame() { currentState = GAME_STATE.VICTORY; document.getElementById('victory-screen').style.display = 'flex'; uiVignette.style.boxShadow = 'none'; closeCameras(); phoneScreen.style.display='none'; }
+
+function resetGame() {
+    document.getElementById('game-over-screen').style.display = 'none'; document.getElementById('victory-screen').style.display = 'none';
+    uiVignette.classList.remove('blood-vignette');
+    
+    player.pills = 0; player.isHidden = false; stamina = 100; isExhausted = false; isSprinting = false; player.timesCaught = 0;
+    joyVector.x = 0; joyVector.y = 0; moveTouchId = null; lookTouchId = null; joystickZone.style.display = 'none'; headBobTimer = 0;
+
+    document.getElementById('inventory-display').innerText = `Meds: 0 / ${TOTAL_PILLS}`; document.getElementById('status-display').innerText = "Status: Safe"; document.getElementById('status-display').style.color = "#fff"; uiActionBtn.style.display = 'none';
+    document.getElementById('distraction-indicator').innerText = ''; document.getElementById('distraction-indicator').style.color = "#aaa";
+    
+    phone.isDead = false; phone.isOpen = false; phone.isRinging = false; phone.eventTimer = 15;
+    phoneBtn.style.opacity = '1'; phoneBtn.innerHTML = '<span>PHONE</span><span style="color:red; font-size:10px;">12%</span>'; phoneNotif.style.display = 'none';
+    
+    for(let item of interactables) {
+        if(item.type === 'PILL' && !item.active) { item.active = true; scene.add(item.mesh); }
+        if(item.type === 'WINDOW' && !item.mesh.userData.isOpen) { item.mesh.userData.isOpen = true; item.mesh.material.opacity = 0.4; item.mesh.material.color.setHex(0x88ccff); }
+        if(item.type === 'WIFI') { item.active = true; item.mesh.material.color.setHex(0x00ff00); }
+    }
+
+    for(let r=0; r<GRID_ROWS; r++) {
+        for(let c=0; c<GRID_COLS; c++) {
+            if(levelLayout[r][c] === 'P') playerMesh.position.set(c*TILE_SIZE, 2, r*TILE_SIZE);
+            if(levelLayout[r][c] === 'S') killerMesh.position.set(c*TILE_SIZE, 3, r*TILE_SIZE);
+        }
+    }
+    
+    camera.position.set(playerMesh.position.x, 3.0, playerMesh.position.z);
+    yaw = -Math.PI / 2; pitch = 0; camera.rotation.set(pitch, yaw, 0);
+    
+    killerMesh.rotation.x = 0; killerMesh.position.y = 3;
+    killer.state = 'PATROL'; killer.path = []; killer.waitTimer = 0; killer.activeDistraction = null; killer.isFrenzied = false; voiceTimer = 5;
+    currentState = GAME_STATE.PLAYING;
+}
+
+window.onload = init;
+</script>
+</body>
+</html>

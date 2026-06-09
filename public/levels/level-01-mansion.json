@@ -224,9 +224,9 @@
   },
   "difficulty": {
     "phoneBattery": 12,
-    "killerPatrolSpeed": 1.35,
-    "killerChaseSpeed": 3.9,
-    "frenzyMultiplier": 1.8,
+    "killerPatrolSpeed": 0.92,
+    "killerChaseSpeed": 1.82,
+    "frenzyMultiplier": 1.28,
     "incomingCallChance": 0.0025
   },
   "winCondition": {

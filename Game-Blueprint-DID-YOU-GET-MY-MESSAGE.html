@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DID YOU GET MY MESSAGE?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#ddd;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;touch-action:none;overscroll-behavior:none;user-select:none}
+canvas{display:block;touch-action:none}
+#startScreen{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0a0a0a 0%,#000 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;text-align:center;padding:20px}
+#startScreen h1{font-size:clamp(24px,6vw,42px);letter-spacing:2px;margin:0 0 10px;color:#ff2a2a;text-shadow:0 0 20px #ff000044}
+#startScreen p{opacity:0.8;line-height:1.5;margin:0 0 24px}
+#startBtn{background:#111;border:1px solid #ff2a2a;color:#fff;padding:16px 32px;font-size:18px;border-radius:12px;cursor:pointer;box-shadow:0 0 30px #ff000022;transition:0.2s}
+#startBtn:active{transform:scale(0.97);background:#1a0000}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:50}
+#topBar{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;gap:10px}
+#staminaWrap{width:34vw;max-width:180px;height:8px;background:#1a1a1a;border:1px solid #333;border-radius:6px;overflow:hidden}
+#stamina{height:100%;width:100%;background:#0f8;transition:width 0.15s, background 0.2s}
+#pills,#battery{font-family:ui-monospace,monospace;font-size:14px;background:rgba(0,0,0,0.6);padding:4px 8px;border-radius:6px;border:1px solid #222}
+#interact{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);pointer-events:auto;background:rgba(0,0,0,0.75);border:1px solid #fff3;padding:12px 22px;border-radius:10px;display:none;font-weight:600;letter-spacing:1px;backdrop-filter:blur(4px)}
+#bottomBar{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 18px;gap:20px}
+#bottomBar button{pointer-events:auto;background:rgba(15,15,15,0.85);color:#fff;border:1px solid #333;padding:14px 18px;border-radius:14px;font-size:15px;min-width:90px;backdrop-filter:blur(6px);box-shadow:0 4px 20px #0008}
+#bottomBar button:active{transform:scale(0.96);background:#222}
+#sprintBtn.touching{background:#330000;border-color:#f33}
+#subtitle{position:absolute;bottom:32%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);padding:8px 14px;border-radius:8px;max-width:85%;text-align:center;font-size:15px;letter-spacing:0.3px;border:1px solid #222;opacity:0;transition:opacity 0.2s}
+#subtitle.show{opacity:1}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 55%,rgba(0,0,0,0.9) 100%);opacity:0;transition:opacity 0.3s;z-index:40;mix-blend-mode:multiply}
+#phone{position:fixed;right:12px;bottom:88px;width:min(92vw,320px);height:420px;background:#050505;border:1px solid #2a2a2a;border-radius:22px;display:none;flex-direction:column;padding:12px;z-index:60;box-shadow:0 10px 40px #000c;pointer-events:auto}
+#phone.off{filter:brightness(0.1)}
+#phoneHeader{text-align:center;padding:6px;font-family:monospace;font-size:13px;color:#8f8;border-bottom:1px solid #1a1a1a;margin-bottom:8px}
+#minimap{background:#000;border:1px solid #222;border-radius:10px;width:100%;height:220px}
+#camBtns{display:flex;gap:8px;margin-top:8px}
+#camBtns button{flex:1;background:#111;border:1px solid #333;color:#9f9;padding:8px;border-radius:8px;font-size:13px}
+#phoneActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+#phoneActions button{background:#0d0d0d;border:1px solid #2a2a2a;color:#ddd;padding:10px;border-radius:10px;font-size:13px}
+#phoneActions button:active{background:#1a1a1a}
+#powerBtn{grid-column:span 2;background:#1a0000 !important;border-color:#500 !important;color:#f88 !important}
+#callIncoming{position:absolute;inset:12px;background:rgba(0,0,0,0.94);display:none;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;border:1px solid #f33;z-index:5}
+#callIncoming span{font-size:22px;margin-bottom:20px;color:#f33;animation:pulse 1s infinite}
+#answer{background:#300;border:1px solid #f33;color:#fff;padding:12px 24px;border-radius:10px;font-size:16px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+#endScreen{position:fixed;inset:0;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:2000;text-align:center;padding:20px}
+#endScreen h2{font-size:28px;margin:0 0 20px;color:#f33}
+#endScreen button{background:#111;border:1px solid #444;color:#fff;padding:12px 24px;border-radius:10px;font-size:16px}
+</style>
+<!-- Tap START to unlock audio. Drag to look, tap floor to move. Hold SPRINT to run. -->
+</head>
+<body>
+<div id="startScreen">
+  <h1>DID YOU GET MY MESSAGE?</h1>
+  <p>Drag to look around.<br>Tap the floor to move.<br>Find 3 pills. Hide in wardrobes. Escape.<br><br>He hears your phone.</p>
+  <button id="startBtn">TAP TO START</button>
+  <p style="font-size:12px;opacity:0.5;margin-top:18px">Headphones recommended • Works best in Chrome/Safari</p>
+</div>
+
+<div id="vignette"></div>
+
+<div id="hud">
+  <div id="topBar">
+    <div id="staminaWrap"><div id="stamina"></div></div>
+    <div id="pills">💊 0/3</div>
+    <div id="battery">🔋 12%</div>
+  </div>
+  <div id="interact">HIDE</div>
+  <div id="bottomBar">
+    <button id="phoneBtn">📱 PHONE</button>
+    <button id="sprintBtn">SPRINT</button>
+  </div>
+  <div id="subtitle"></div>
+</div>
+
+<div id="phone">
+  <div id="phoneHeader">🔋 <span id="bat">12%</span> • 📶 • 12:04 AM</div>
+  <canvas id="minimap" width="300" height="220"></canvas>
+  <div id="camBtns"><button data-cam="0">CAM 1 HALL</button><button data-cam="1">CAM 2 BED</button></div>
+  <div id="phoneActions">
+    <button id="callBtn">CALL HIM</button>
+    <button id="wifiBtn">REBOOT WIFI</button>
+    <button id="blindBtn">BLINDS: OPEN</button>
+    <button id="powerBtn">POWER OFF</button>
+  </div>
+  <div id="callIncoming"><span>INCOMING...</span><button id="answer">ANSWER</button></div>
+</div>
+
+<div id="endScreen">
+  <h2 id="endText"></h2>
+  <button onclick="location.reload()">RETRY</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+(() => {
+let scene,camera,renderer,clock,raycaster,ambient,dirLight;
+let floor,walls=[],walkable,rows,cols,tile=2;
+let player={x:0,z:0,gx:0,gz:0,path:[],moving:false};
+let killer,killerLight,killerGx=0,killerGz=0,killerPath=[],killerState='patrol',killerTarget=null,lastSeen=0,hasSpotted=false;
+let wardrobes=[],pillsArray=[],cameras=[],exitMesh,routerMesh,routerLight,routerPos;
+let yaw=0,pitch=0,pointerDown=false,isDragging=false,dragSX=0,dragSY=0,lastTap=0;
+let stamina=100,isSprinting=false,isExhausted=false,isHidden=false,nearWardrobe=null;
+let pills=0,isDead=false,hasWon=false;
+let phoneOn=true,battery=12,phoneOpen=false,blindsClosed=false;
+let audioCtx,heartOsc,heartGain,noise,breatheFilter,breathGain,lastBeat=0;
+let subtitle,subTimer,minimap,minimapCtx;
+let gameStarted=false;
+
+const startBtn=document.getElementById('startBtn');
+const startScreen=document.getElementById('startScreen');
+const interactBtn=document.getElementById('interact');
+const sprintBtn=document.getElementById('sprintBtn');
+const phoneBtn=document.getElementById('phoneBtn');
+const phone=document.getElementById('phone');
+const callBtn=document.getElementById('callBtn');
+const wifiBtn=document.getElementById('wifiBtn');
+const blindBtn=document.getElementById('blindBtn');
+const powerBtn=document.getElementById('powerBtn');
+const answerBtn=document.getElementById('answer');
+const vignette=document.getElementById('vignette');
+
+function showSubtitle(t){subtitle.textContent=t;subtitle.classList.add('show');clearTimeout(subTimer);subTimer=setTimeout(()=>subtitle.classList.remove('show'),2200);}
+
+function say(text,dist=5){
+  try{
+    const u=new SpeechSynthesisUtterance(text);
+    u.volume=Math.max(0.05,Math.min(1,1 - dist/14));
+    u.rate=0.88; u.pitch=0.35; u.lang='en-US';
+    speechSynthesis.speak(u);
+  }catch(e){}
+  showSubtitle(text.toUpperCase());
+}
+
+const level=[
+"111111111111111",
+"1P....1.....3.1",
+"1.11..1.111.1.1",
+"1.1W..1.1E1.1.1",
+"1.1.....1...1.11",
+"1...11111.111.1",
+"111.1.....1...1",
+"1C..1.111.1.111",
+"1.3.1.1R1.1...1",
+"1...1...1.111.1",
+"1.11111.....1.1",
+"1......1111.1.1",
+"1.1111.....1.W.1",
+"1K...1.3.1...C1",
+"111111111111111"
+];
+
+function initThree(){
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x040404);
+  scene.fog=new THREE.FogExp2(0x000000,0.082);
+  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,0.1,100);
+  camera.rotation.order='YXZ';
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  document.body.appendChild(renderer.domElement);
+  clock=new THREE.Clock();
+  raycaster=new THREE.Raycaster();
+  ambient=new THREE.AmbientLight(0x444444,0.65);
+  scene.add(ambient);
+  dirLight=new THREE.DirectionalLight(0xffffff,0.18);
+  dirLight.position.set(6,10,4);
+  scene.add(dirLight);
+  const floorMat=new THREE.MeshStandardMaterial({color:0x080808,roughness:1,metalness:0});
+  floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),floorMat);
+  floor.rotation.x=-Math.PI/2;
+  scene.add(floor);
+  rows=level.length; cols=level[0].length;
+  walkable=Array.from({length:rows},()=>Array(cols).fill(false));
+  const wallMat=new THREE.MeshStandardMaterial({color:0x151515,roughness:0.95});
+  let killerStart={x:0,z:0};
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<cols;x++){
+      const ch=level[y][x];
+      const wx=(x-cols/2+0.5)*tile;
+      const wz=(y-rows/2+0.5)*tile;
+      if(ch==='1'){
+        const w=new THREE.Mesh(new THREE.BoxGeometry(tile,2.6,tile),wallMat);
+        w.position.set(wx,1.3,wz);
+        scene.add(w); walls.push(w);
+      }else walkable[y][x]=true;
+      if(ch==='P'){player.x=wx;player.z=wz;player.gx=x;player.gz=y;}
+      if(ch==='K'){killerStart.x=wx;killerStart.z=wz;killerGx=x;killerGz=y;}
+      if(ch==='W'){
+        const wm=new THREE.Mesh(new THREE.BoxGeometry(1.2,1.85,0.75), new THREE.MeshStandardMaterial({color:0x4a2f15,roughness:0.9}));
+        wm.position.set(wx,0.925,wz); scene.add(wm); wardrobes.push({mesh:wm,x:wx,z:wz,gx:x,gz:y});
+      }
+      if(ch==='3'){
+        const pm=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,0.07,12), new THREE.MeshStandardMaterial({color:0x00ffff,emissive:0x00cccc,emissiveIntensity:0.9}));
+        pm.position.set(wx,0.28,wz); pm.rotation.x=Math.PI/2; scene.add(pm); pillsArray.push({mesh:pm,x:wx,z:wz,gx:x,gz:y,taken:false});
+      }
+      if(ch==='E'){
+        exitMesh=new THREE.Mesh(new THREE.BoxGeometry(1,2.05,0.18), new THREE.MeshStandardMaterial({color:0x002200,emissive:0x00ff00,emissiveIntensity:0.15}));
+        exitMesh.position.set(wx,1.025,wz); scene.add(exitMesh);
+      }
+      if(ch==='C'){
+        const cm=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.18,0.28), new THREE.MeshStandardMaterial({color:0x222222}));
+        cm.position.set(wx,2.25,wz); scene.add(cm); cameras.push({gx:x,gz:y,x:wx,z:wz});
+      }
+      if(ch==='R'){
+        routerPos={gx:x,gz:y,x:wx,z:wz};
+        routerMesh=new THREE.Mesh(new THREE.BoxGeometry(0.48,0.18,0.36), new THREE.MeshStandardMaterial({color:0x0a0a0a,emissive:0x333300,emissiveIntensity:0.3}));
+        routerMesh.position.set(wx,0.75,wz); scene.add(routerMesh);
+        routerLight=new THREE.PointLight(0xffee88,0.9,4); routerLight.position.set(wx,0.85,wz); scene.add(routerLight);
+      }
+    }
+  }
+  killer=new THREE.Group();
+  const kb=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.34,1.55,10), new THREE.MeshStandardMaterial({color:0x0a0a0a,roughness:1}));
+  kb.position.y=0.775; killer.add(kb);
+  const kh=new THREE.Mesh(new THREE.SphereGeometry(0.29,10,10), new THREE.MeshStandardMaterial({color:0x1a0000,roughness:0.8}));
+  kh.position.y=1.68; killer.add(kh);
+  killerLight=new THREE.PointLight(0xff0000,1.9,9); killerLight.position.set(0,1.5,0); killer.add(killerLight);
+  killer.position.set(killerStart.x,0,killerStart.z); scene.add(killer);
+  camera.position.set(player.x,1.6,player.z);
+  subtitle=document.getElementById('subtitle');
+  minimap=document.getElementById('minimap');
+  minimapCtx=minimap.getContext('2d');
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+  setupInput();
+}
+
+function getPath(sx,sz,ex,ez){
+  if(sx===ex&&sz===ez) return [[sx,sz]];
+  const q=[[sx,sz]]; const visited=Array.from({length:rows},()=>Array(cols).fill(false));
+  visited[sz][sx]=true; const prev=Array.from({length:rows},()=>Array(cols).fill(null));
+  const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+  while(q.length){
+    const [x,z]=q.shift(); if(x===ex&&z===ez) break;
+    for(const [dx,dz] of dirs){const nx=x+dx,nz=z+dz; if(nx<0||nz<0||nx>=cols||nz>=rows)continue; if(!walkable[nz][nx]||visited[nz][nx])continue; visited[nz][nx]=true; prev[nz][nx]=[x,z]; q.push([nx,nz]);}
+  }
+  if(!visited[ez][ex]) return [];
+  const path=[]; let cx=ex,cz=ez; while(!(cx===sx&&cz===sz)){path.unshift([cx,cz]); const p=prev[cz][cx]; if(!p)break; [cx,cz]=p;} path.unshift([sx,sz]); return path;
+}
+
+function setupInput(){
+  const canvas=renderer.domElement;
+  canvas.addEventListener('pointerdown',e=>{pointerDown=true;isDragging=false;dragSX=e.clientX;dragSY=e.clientY;lastTap=performance.now();});
+  window.addEventListener('pointermove',e=>{
+    if(!pointerDown) return;
+    const dx=e.clientX-dragSX, dy=e.clientY-dragSY;
+    if(Math.abs(dx)>4||Math.abs(dy)>4) isDragging=true;
+    if(isDragging){yaw-=dx*0.004; pitch-=dy*0.004; pitch=Math.max(-1.25,Math.min(1.25,pitch)); camera.rotation.set(pitch,yaw,0); dragSX=e.clientX; dragSY=e.clientY;}
+  });
+  window.addEventListener('pointerup',e=>{
+    pointerDown=false;
+    const dt=performance.now()-lastTap;
+    if(!isDragging && dt<300 && !isHidden){
+      const rect=canvas.getBoundingClientRect();
+      const nx=((e.clientX-rect.left)/rect.width)*2-1;
+      const ny=-((e.clientY-rect.top)/rect.height)*2+1;
+      raycaster.setFromCamera({x:nx,y:ny},camera);
+      const hit=raycaster.intersectObject(floor);
+      if(hit.length){
+        const p=hit[0].point;
+        const gx=Math.round((p.x/tile)+cols/2-0.5);
+        const gz=Math.round((p.z/tile)+rows/2-0.5);
+        if(gx>=0&&gz>=0&&gx<cols&&gz<rows&&walkable[gz][gx]){
+          player.path=getPath(player.gx,player.gz,gx,gz);
+        }
+      }
+    }
+  });
+  sprintBtn.addEventListener('pointerdown',e=>{e.preventDefault();isSprinting=true;sprintBtn.classList.add('touching');});
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>sprintBtn.addEventListener(ev,()=>{isSprinting=false;sprintBtn.classList.remove('touching');}));
+  interactBtn.onclick=()=>{
+    if(isHidden){isHidden=false;interactBtn.textContent='HIDE';showSubtitle("You step out");} 
+    else if(nearWardrobe){isHidden=true;player.path=[];player.x=nearWardrobe.x;player.z=nearWardrobe.z;player.gx=nearWardrobe.gx;player.gz=nearWardrobe.gz;camera.position.set(nearWardrobe.x,1.15,nearWardrobe.z);interactBtn.textContent='LEAVE';showSubtitle("You hold your breath...");}
+  };
+  phoneBtn.onclick=()=>{phoneOpen=!phoneOpen;phone.style.display=phoneOpen?'flex':'none'; if(phoneOpen&&phoneOn) drawMinimap();};
+  callBtn.onclick=()=>{if(!phoneOn)return; battery=Math.max(0,battery-2); updateBattery(); killerState='investigate'; killerTarget={x:player.gx,z:player.gz}; say("I'm coming",4); showSubtitle("You called him..."); setTimeout(()=>say("Did you get my message?", Math.hypot(player.x-killer.position.x,player.z-killer.position.z)),1200); phoneOpen=false; phone.style.display='none';};
+  wifiBtn.onclick=()=>{if(!phoneOn)return; battery=Math.max(0,battery-0.8); updateBattery(); routerFrenzy(); showSubtitle("WiFi rebooting...");};
+  blindBtn.onclick=()=>{if(!phoneOn)return; blindsClosed=!blindsClosed; blindBtn.textContent=`BLINDS: ${blindsClosed?'CLOSED':'OPEN'}`; ambient.intensity=blindsClosed?0.28:0.65; scene.fog.density=blindsClosed?0.135:0.082; battery=Math.max(0,battery-0.4); updateBattery(); showSubtitle(blindsClosed?"Blinds shut":"Blinds open");};
+  powerBtn.onclick=()=>{phoneOn=false;battery=0;updateBattery();phone.classList.add('off');showSubtitle("Phone powered off");};
+  answerBtn.onclick=()=>{document.getElementById('callIncoming').style.display='none';};
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+}
+
+function initAudio(){
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    heartOsc=audioCtx.createOscillator(); heartOsc.type='sine'; heartOsc.frequency.value=54;
+    heartGain=audioCtx.createGain(); heartGain.gain.value=0; heartOsc.connect(heartGain).connect(audioCtx.destination); heartOsc.start();
+    const buffer=audioCtx.createBuffer(1,audioCtx.sampleRate*2,audioCtx.sampleRate); const data=buffer.getChannelData(0); for(let i=0;i<data.length;i++) data[i]=Math.random()*2-1;
+    noise=audioCtx.createBufferSource(); noise.buffer=buffer; noise.loop=true;
+    breatheFilter=audioCtx.createBiquadFilter(); breatheFilter.type='bandpass'; breatheFilter.frequency.value=680; breatheFilter.Q.value=0.9;
+    breathGain=audioCtx.createGain(); breathGain.gain.value=0; noise.connect(breatheFilter).connect(breathGain).connect(audioCtx.destination); noise.start();
+  }catch(e){}
+}
+
+function updateBattery(){document.getElementById('bat').textContent=Math.floor(battery)+'%'; document.getElementById('battery').textContent=`🔋 ${Math.floor(battery)}%`; if(battery<=0){phoneOn=false;phone.classList.add('off');}}
+
+function routerFrenzy(){
+  if(!routerLight) return;
+  let t=0; const base=ambient.intensity;
+  const flick=setInterval(()=>{
+    ambient.intensity=0.15+Math.random()*0.6;
+    routerLight.intensity=1.5+Math.random()*2.5;
+    killerState='investigate'; killerTarget={x:routerPos.gx,z:routerPos.gz};
+    t+=90; if(t>8000){clearInterval(flick); ambient.intensity=blindsClosed?0.28:0.65; routerLight.intensity=0.9;}
+  },90);
+}
+
+function updatePlayer(delta){
+  if(isHidden) return;
+  if(player.path && player.path.length>1){
+    const target=player.path[1]; const tx=(target[0]-cols/2+0.5)*tile; const tz=(target[1]-rows/2+0.5)*tile;
+    const dx=tx-player.x, dz=tz-player.z; const dist=Math.hypot(dx,dz);
+    const speed=isExhausted?1.25: isSprinting?4.6:2.45;
+    if(dist<0.1){player.x=tx;player.z=tz;player.gx=target[0];player.gz=target[1];player.path.shift();} else {player.x+=dx/dist*speed*delta; player.z+=dz/dist*speed*delta; player.moving=true;}
+  }else player.moving=false;
+  camera.position.set(player.x,1.6,player.z);
+}
+
+function canSee(range){
+  const dx=player.x-killer.position.x, dz=player.z-killer.position.z; const dist=Math.hypot(dx,dz); if(dist>range||isHidden) return false;
+  const dir=new THREE.Vector3(dx,0,dz).normalize(); raycaster.set(new THREE.Vector3(killer.position.x,1.42,killer.position.z),dir);
+  const hits=raycaster.intersectObjects(walls.concat(wardrobes.map(w=>w.mesh)));
+  return !(hits.length && hits[0].distance < dist-0.45);
+}
+
+function updateKiller(delta){
+  const detect=blindsClosed?5.3:8.6;
+  killerGx=Math.max(0,Math.min(cols-1,Math.round((killer.position.x/tile)+cols/2-0.5)));
+  killerGz=Math.max(0,Math.min(rows-1,Math.round((killer.position.z/tile)+rows/2-0.5)));
+  const sees=canSee(detect);
+  if(sees){killerState='chase';lastSeen=performance.now();killerTarget={x:player.gx,z:player.gz}; if(!hasSpotted){hasSpotted=true;say("I see you", Math.hypot(player.x-killer.position.x,player.z-killer.position.z));}}
+  else if(killerState==='chase'&&performance.now()-lastSeen>3400){killerState='patrol';hasSpotted=false;}
+  if((killerState==='chase'||killerState==='investigate') && killerTarget){
+    if(!killerPath||killerPath.length<2||Math.random()<0.02) killerPath=getPath(killerGx,killerGz,killerTarget.x,killerTarget.z);
+  }else if(killerState==='patrol'&&(!killerPath||killerPath.length<=1)){
+    let rx,rz,a=0; do{rx=Math.floor(Math.random()*cols);rz=Math.floor(Math.random()*rows);a++;}while((!walkable[rz][rx]||Math.hypot(rx-player.gx,rz-player.gz)<5)&&a<60);
+    killerPath=getPath(killerGx,killerGz,rx,rz);
+  }
+  if(killerPath&&killerPath.length>1){
+    const t=killerPath[1]; const tx=(t[0]-cols/2+0.5)*tile, tz=(t[1]-rows/2+0.5)*tile;
+    const dx=tx-killer.position.x, dz=tz-killer.position.z, d=Math.hypot(dx,dz); const sp=killerState==='chase'?3.05:1.85;
+    if(d<0.12){killer.position.x=tx; killer.position.z=tz; killerPath.shift();} else {killer.position.x+=dx/d*sp*delta; killer.position.z+=dz/d*sp*delta; killer.rotation.y=Math.atan2(dx,dz);}
+  }
+  killerLight.intensity=1.5+Math.sin(performance.now()*0.009)*0.6+(killerState==='chase'?0.6:0);
+  if(!isHidden && Math.hypot(player.x-killer.position.x,player.z-killer.position.z)<0.92) die();
+}
+
+function updateStamina(delta){
+  if(isSprinting && player.moving && !isHidden && !isExhausted){stamina-=27*delta; if(stamina<=0){stamina=0;isExhausted=true;isSprinting=false;showSubtitle("Exhausted");}}
+  else stamina+=(isExhausted?7:14)*delta;
+  stamina=Math.max(0,Math.min(100,stamina)); if(stamina>42) isExhausted=false;
+  const sb=document.getElementById('stamina'); sb.style.width=stamina+'%'; sb.style.background=stamina<18?'#f22':stamina<45?'#fa0':'#0d8';
+}
+
+function checkInteractions(){
+  pillsArray.forEach(p=>{if(!p.taken){const d=Math.hypot(player.x-p.x,player.z-p.z); if(d<0.88){p.taken=true; scene.remove(p.mesh); pills++; document.getElementById('pills').textContent=`💊 ${pills}/3`; if(navigator.vibrate) navigator.vibrate(30); if(pills===3){exitMesh.material.emissiveIntensity=1; showSubtitle("Exit unlocked");}}}});
+  nearWardrobe=null; let best=99; wardrobes.forEach(w=>{const d=Math.hypot(player.x-w.x,player.z-w.z); if(d<1.62&&d<best){best=d; nearWardrobe=w;}});
+  if((nearWardrobe&&!isHidden)||isHidden){interactBtn.style.display='block';} else interactBtn.style.display='none';
+  if(pills===3 && exitMesh && Math.hypot(player.x-exitMesh.position.x,player.z-exitMesh.position.z)<1.25) win();
+}
+
+function updateAudioProc(){
+  if(!audioCtx) return;
+  const dist=Math.hypot(player.x-killer.position.x,player.z-killer.position.z);
+  const fear=Math.max(0,1-dist/9.2)+(isExhausted?0.18:0)+(isHidden?-0.15:0);
+  const bpm=66+fear*72+(isSprinting?16:0); const interval=60000/bpm;
+  if(performance.now()-lastBeat>interval){lastBeat=performance.now(); const t=audioCtx.currentTime; heartGain.gain.cancelScheduledValues(t); heartGain.gain.setValueAtTime(0,t); heartGain.gain.linearRampToValueAtTime(0.82,t+0.018); heartGain.gain.exponentialRampToValueAtTime(0.001,t+0.155); heartGain.gain.setValueAtTime(0,t+0.21); heartGain.gain.linearRampToValueAtTime(0.62,t+0.226); heartGain.gain.exponentialRampToValueAtTime(0.001,t+0.35);}
+  const targetB=0.011+fear*0.047+(isSprinting?0.028:0)+(isExhausted?0.038:0); breathGain.gain.linearRampToValueAtTime(isHidden?0.0025:targetB,audioCtx.currentTime+0.18); breatheFilter.frequency.linearRampToValueAtTime(560+fear*480,audioCtx.currentTime+0.18);
+  vignette.style.opacity=Math.min(0.85, fear*0.62+(stamina<12?0.18:0));
+}
+
+function drawMinimap(){
+  if(!phoneOpen) return;
+  const ctx=minimapCtx; ctx.clearRect(0,0,300,220); ctx.fillStyle='#050505'; ctx.fillRect(0,0,300,220);
+  const cw=300/cols, ch=220/rows;
+  ctx.fillStyle='#1a1a1a'; for(let y=0;y<rows;y++) for(let x=0;x<cols;x++) if(!walkable[y][x]) ctx.fillRect(x*cw,y*ch,cw-1,ch-1);
+  cameras.forEach(c=>{ctx.fillStyle='#0a0';ctx.beginPath();ctx.arc((c.gx+0.5)*cw,(c.gz+0.5)*ch,3.5,0,7);ctx.fill();});
+  pillsArray.filter(p=>!p.taken).forEach(p=>{ctx.fillStyle='#0ff';ctx.fillRect((p.gx+0.35)*cw,(p.gz+0.35)*ch,cw*0.3,ch*0.3);});
+  if(routerPos){ctx.fillStyle='#ff0';ctx.fillRect((routerPos.gx+0.25)*cw,(routerPos.gz+0.25)*ch,cw*0.5,ch*0.5);}
+  ctx.fillStyle='#08f';ctx.beginPath();ctx.arc((player.gx+0.5)*cw,(player.gz+0.5)*ch,4.5,0,7);ctx.fill();
+  ctx.fillStyle='#f22';ctx.beginPath();ctx.arc((killerGx+0.5)*cw,(killerGz+0.5)*ch,4.5,0,7);ctx.fill();
+}
+
+let callTimer;
+function scheduleCall(){clearTimeout(callTimer); callTimer=setTimeout(()=>{if(phoneOn&&!isDead&&!hasWon&&!isHidden){incoming()}; scheduleCall();},17000+Math.random()*16000);}
+function incoming(){
+  const inc=document.getElementById('callIncoming'); inc.style.display='flex';
+  if(audioCtx){let r=0; const ri=setInterval(()=>{if(r++>3||inc.style.display==='none'){clearInterval(ri);return;} const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='square';o.frequency.value=820;g.gain.value=0.05;o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+0.11);},380);}
+  setTimeout(()=>{inc.style.display='none'; if(!phoneOn) return; const lines=["Did you get my message","I can hear you breathing","Why are you hiding","Stay on the phone","I'm in the hallway"]; say(lines[Math.floor(Math.random()*lines.length)], Math.hypot(player.x-killer.position.x,player.z-killer.position.z)); battery=Math.max(0,battery-1.1); updateBattery(); if(Math.random()<0.55){killerState='investigate'; killerTarget={x:player.gx,z:player.gz};}},2350);
+}
+
+function die(){if(isDead) return; isDead=true; document.getElementById('endText').innerHTML="HE FOUND YOU<br><span style='font-size:14px;opacity:0.7'>He got your message</span>"; document.getElementById('endScreen').style.display='flex'; try{speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance("got you"); u.pitch=0.2; u.rate=0.7; speechSynthesis.speak(u);}catch(e){}}
+function win(){if(hasWon) return; hasWon=true; document.getElementById('endText').innerHTML="YOU ESCAPED<br><span style='font-size:14px;opacity:0.7'>But he still has your number</span>"; document.getElementById('endScreen').style.display='flex';}
+
+function animate(){
+  requestAnimationFrame(animate);
+  const delta=Math.min(0.05,clock.getDelta());
+  if(gameStarted && !isDead && !hasWon){
+    updatePlayer(delta);
+    updateKiller(delta);
+    updateStamina(delta);
+    checkInteractions();
+    updateAudioProc();
+    if(phoneOpen) drawMinimap();
+    pillsArray.forEach(p=>{if(p.mesh) p.mesh.rotation.y+=delta*2;});
+  }
+  renderer.render(scene,camera);
+}
+
+startBtn.onclick=async()=>{
+  startScreen.style.display='none';
+  initThree();
+  initAudio();
+  if(audioCtx && audioCtx.state==='suspended') await audioCtx.resume();
+  gameStarted=true;
+  animate();
+  scheduleCall();
+  updateBattery();
+  setInterval(()=>{if(phoneOn&&gameStarted){battery=Math.max(0,battery-0.018); if(phoneOpen) battery-=0.04; updateBattery(); if(battery<=0){phoneOn=false; phone.classList.add('off');}}},1000);
+  setTimeout(()=>say("Did you get my message",11),2800);
+  showSubtitle("Find 3 pills to power the exit");
+};
+
+})();
+</script>
+</body>
+</html>
