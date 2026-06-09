@@ -68,7 +68,8 @@ async function buildLevel(data){
     const model = await assets.instantiate(obj.asset, { name:obj.id, x:obj.x*cellSize, z:obj.z*cellSize, rotation:obj.rotation||0, scale: obj.type==='pill' ? .55 : 1 });
     model.userData.game = obj; scene.add(model); interactables.push({ ...obj, model });
   }
-  const killerMesh = await assets.instantiate('killer_outfit_janitor_coveralls', {name:'killer', x:killer.x*cellSize, z:killer.z*cellSize});
+  const killerAsset = data.killerAsset || 'killer_creeper';
+  const killerMesh = await assets.instantiate(killerAsset, {name:'killer', x:killer.x*cellSize, z:killer.z*cellSize});
   killer.mesh = killerMesh; scene.add(killerMesh);
   const red = new THREE.PointLight(0xff2020, 1.4, 5); red.position.set(0,1.4,0); killerMesh.add(red);
   updateCamera(); updateUI(); renderPhone('home');
