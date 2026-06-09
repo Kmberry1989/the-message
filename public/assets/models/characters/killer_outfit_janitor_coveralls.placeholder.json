@@ -1,0 +1,7 @@
+{
+  "id": "killer_outfit_janitor_coveralls",
+  "expectedFile": "killer_outfit_janitor_coveralls.glb",
+  "type": "model",
+  "fallback": "humanoid",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

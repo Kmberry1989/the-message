@@ -1,0 +1,7 @@
+{
+  "id": "chair_tufted",
+  "expectedFile": "chair_tufted.glb",
+  "type": "model",
+  "fallback": "furniture",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

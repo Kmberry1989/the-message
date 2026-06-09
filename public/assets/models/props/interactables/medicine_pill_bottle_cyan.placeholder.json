@@ -1,0 +1,7 @@
+{
+  "id": "medicine_pill_bottle_cyan",
+  "expectedFile": "medicine_pill_bottle_cyan.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

@@ -1,0 +1,7 @@
+{
+  "id": "audio_phone_power_off",
+  "expectedFile": "audio_phone_power_off.ogg",
+  "type": "audio",
+  "fallback": "audio",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

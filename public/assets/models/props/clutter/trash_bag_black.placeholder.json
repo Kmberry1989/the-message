@@ -1,0 +1,7 @@
+{
+  "id": "trash_bag_black",
+  "expectedFile": "trash_bag_black.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

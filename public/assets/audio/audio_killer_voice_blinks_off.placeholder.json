@@ -1,0 +1,7 @@
+{
+  "id": "audio_killer_voice_blinks_off",
+  "expectedFile": "audio_killer_voice_blinks_off.ogg",
+  "type": "audio",
+  "fallback": "audio",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

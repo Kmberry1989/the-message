@@ -1,0 +1,7 @@
+{
+  "id": "broken_ceramic_set",
+  "expectedFile": "broken_ceramic_set.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

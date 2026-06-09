@@ -1,0 +1,7 @@
+{
+  "id": "outdoor_picnic_table",
+  "expectedFile": "outdoor_picnic_table.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

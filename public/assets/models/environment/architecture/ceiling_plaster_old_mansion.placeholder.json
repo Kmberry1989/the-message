@@ -1,0 +1,7 @@
+{
+  "id": "ceiling_plaster_old_mansion",
+  "expectedFile": "ceiling_plaster_old_mansion.glb",
+  "type": "model",
+  "fallback": "architecture",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

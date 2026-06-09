@@ -1,0 +1,7 @@
+{
+  "id": "mansion_room_shell",
+  "expectedFile": "mansion_room_shell.glb",
+  "type": "model",
+  "fallback": "architecture",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

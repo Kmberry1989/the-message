@@ -1,0 +1,7 @@
+{
+  "id": "window_dirty_no_curtains",
+  "expectedFile": "window_dirty_no_curtains.glb",
+  "type": "model",
+  "fallback": "architecture",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

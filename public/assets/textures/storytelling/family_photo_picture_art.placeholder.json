@@ -1,0 +1,7 @@
+{
+  "id": "family_photo_picture_art",
+  "expectedFile": "family_photo_picture_art.png",
+  "type": "texture",
+  "fallback": "paper",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

@@ -1,0 +1,1235 @@
+{
+  "version": "0.2.0",
+  "draco": {
+    "enabled": true,
+    "decoderPath": "https://www.gstatic.com/draco/versioned/decoders/1.5.7/",
+    "notes": "Drop local Draco decoders into public/draco and change decoderPath to /draco/ if you prefer not to use CDN."
+  },
+  "fallbacks": {
+    "generic_box": {
+      "shape": "box",
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "color": "#8a7660"
+    },
+    "humanoid": {
+      "shape": "capsule",
+      "size": [
+        0.55,
+        1.8,
+        0.55
+      ],
+      "color": "#5c4a42"
+    },
+    "architecture": {
+      "shape": "box",
+      "size": [
+        1,
+        2.5,
+        1
+      ],
+      "color": "#4d463e"
+    },
+    "prop": {
+      "shape": "box",
+      "size": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "color": "#705b47"
+    },
+    "furniture": {
+      "shape": "box",
+      "size": [
+        1.2,
+        0.9,
+        0.8
+      ],
+      "color": "#533b25"
+    },
+    "decal": {
+      "shape": "plane",
+      "size": [
+        1,
+        1,
+        0.01
+      ],
+      "color": "#2b211d"
+    },
+    "paper": {
+      "shape": "plane",
+      "size": [
+        0.8,
+        0.55,
+        0.01
+      ],
+      "color": "#d2c4a5"
+    },
+    "ui": {
+      "shape": "ui",
+      "color": "#111111"
+    },
+    "audio": {
+      "shape": "silent",
+      "color": "#000000"
+    }
+  },
+  "assets": {
+    "player_fp_hands_blue_plaid_neutral": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/player_fp_hands_blue_plaid_neutral.glb",
+      "draco": true
+    },
+    "player_fp_hands_blue_plaid_phone_blank": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/player_fp_hands_blue_plaid_phone_blank.glb",
+      "draco": true
+    },
+    "player_fp_hands_blue_plaid_phone_calling_green": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/player_fp_hands_blue_plaid_phone_calling_green.glb",
+      "draco": true
+    },
+    "player_fp_hands_blue_plaid_phone_security_static": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/player_fp_hands_blue_plaid_phone_security_static.glb",
+      "draco": true
+    },
+    "player_fp_hands_blue_plaid_fists": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/player_fp_hands_blue_plaid_fists.glb",
+      "draco": true
+    },
+    "player_body_shadow_proxy": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/player_body_shadow_proxy.glb",
+      "draco": true
+    },
+    "killer_base_rig": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/killer_base_rig.glb",
+      "draco": true
+    },
+    "killer_outfit_janitor_coveralls": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/killer_outfit_janitor_coveralls.glb",
+      "draco": true
+    },
+    "killer_outfit_torn_business_suit": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/killer_outfit_torn_business_suit.glb",
+      "draco": true
+    },
+    "killer_outfit_rubber_apron": {
+      "type": "model",
+      "fallback": "humanoid",
+      "status": "placeholder",
+      "path": "/assets/models/characters/killer_outfit_rubber_apron.glb",
+      "draco": true
+    },
+    "wall_straight_old_mansion": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/wall_straight_old_mansion.glb",
+      "draco": true
+    },
+    "wall_corner_old_mansion": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/wall_corner_old_mansion.glb",
+      "draco": true
+    },
+    "floor_wood_old_mansion": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/floor_wood_old_mansion.glb",
+      "draco": true
+    },
+    "ceiling_plaster_old_mansion": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/ceiling_plaster_old_mansion.glb",
+      "draco": true
+    },
+    "door_standard_wood": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/door_standard_wood.glb",
+      "draco": true
+    },
+    "door_exit_back": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/door_exit_back.glb",
+      "draco": true
+    },
+    "door_frame_old": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/door_frame_old.glb",
+      "draco": true
+    },
+    "window_dirty_no_curtains": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/window_dirty_no_curtains.glb",
+      "draco": true
+    },
+    "window_blinds_rolled_up": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/window_blinds_rolled_up.glb",
+      "draco": true
+    },
+    "window_blinds_rolled_down_open": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/window_blinds_rolled_down_open.glb",
+      "draco": true
+    },
+    "window_blinds_closed": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/window_blinds_closed.glb",
+      "draco": true
+    },
+    "mansion_room_shell": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/mansion_room_shell.glb",
+      "draco": true
+    },
+    "outdoor_yard_shell": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/outdoor_yard_shell.glb",
+      "draco": true
+    },
+    "basement_shell": {
+      "type": "model",
+      "fallback": "architecture",
+      "status": "placeholder",
+      "path": "/assets/models/environment/architecture/basement_shell.glb",
+      "draco": true
+    },
+    "wardrobe_antique_closed": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/wardrobe_antique_closed.glb",
+      "draco": true
+    },
+    "wardrobe_antique_open": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/wardrobe_antique_open.glb",
+      "draco": true
+    },
+    "medicine_pill_bottle_cyan": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/medicine_pill_bottle_cyan.glb",
+      "draco": true
+    },
+    "crt_tv_old_tube": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/crt_tv_old_tube.glb",
+      "draco": true
+    },
+    "thermostat_analog_wall": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/thermostat_analog_wall.glb",
+      "draco": true
+    },
+    "mailbox_rural_blue_flag_down": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/mailbox_rural_blue_flag_down.glb",
+      "draco": true
+    },
+    "mailbox_rural_blue_flag_up": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/mailbox_rural_blue_flag_up.glb",
+      "draco": true
+    },
+    "wifi_router_black_on": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/wifi_router_black_on.glb",
+      "draco": true
+    },
+    "wifi_router_black_off": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/wifi_router_black_off.glb",
+      "draco": true
+    },
+    "security_camera_dome": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/security_camera_dome.glb",
+      "draco": true
+    },
+    "security_camera_bullet": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/security_camera_bullet.glb",
+      "draco": true
+    },
+    "security_camera_corner": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/interactables/security_camera_corner.glb",
+      "draco": true
+    },
+    "end_table_antique": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/end_table_antique.glb",
+      "draco": true
+    },
+    "chair_tufted": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/chair_tufted.glb",
+      "draco": true
+    },
+    "chair_dining_old": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/chair_dining_old.glb",
+      "draco": true
+    },
+    "sofa_antique": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/sofa_antique.glb",
+      "draco": true
+    },
+    "cabinet_old": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/cabinet_old.glb",
+      "draco": true
+    },
+    "dresser_old": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/dresser_old.glb",
+      "draco": true
+    },
+    "bookshelf_old": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bookshelf_old.glb",
+      "draco": true
+    },
+    "lamp_table": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/lamp_table.glb",
+      "draco": true
+    },
+    "lamp_floor": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/lamp_floor.glb",
+      "draco": true
+    },
+    "mirror_oval_dirty": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/mirror_oval_dirty.glb",
+      "draco": true
+    },
+    "rug_persian_worn": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/rug_persian_worn.glb",
+      "draco": true
+    },
+    "painting_landscape_dark": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/painting_landscape_dark.glb",
+      "draco": true
+    },
+    "picture_frame_family": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/picture_frame_family.glb",
+      "draco": true
+    },
+    "wall_sconce_old": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/wall_sconce_old.glb",
+      "draco": true
+    },
+    "clock_wall_round": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/clock_wall_round.glb",
+      "draco": true
+    },
+    "clock_mantle": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/clock_mantle.glb",
+      "draco": true
+    },
+    "houseplant_dead": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/houseplant_dead.glb",
+      "draco": true
+    },
+    "box_cardboard_clutter": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/box_cardboard_clutter.glb",
+      "draco": true
+    },
+    "bedroom_bed": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bedroom_bed.glb",
+      "draco": true
+    },
+    "bedroom_nightstand": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bedroom_nightstand.glb",
+      "draco": true
+    },
+    "bedroom_dresser": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bedroom_dresser.glb",
+      "draco": true
+    },
+    "bedroom_mirror": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bedroom_mirror.glb",
+      "draco": true
+    },
+    "bedroom_rug": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bedroom_rug.glb",
+      "draco": true
+    },
+    "bedroom_wall_art": {
+      "type": "model",
+      "fallback": "furniture",
+      "status": "placeholder",
+      "path": "/assets/models/props/furniture/bedroom_wall_art.glb",
+      "draco": true
+    },
+    "bottles_glass_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/bottles_glass_set.glb",
+      "draco": true
+    },
+    "cans_rusted_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/cans_rusted_set.glb",
+      "draco": true
+    },
+    "trash_bag_black": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/trash_bag_black.glb",
+      "draco": true
+    },
+    "trash_wrappers_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/trash_wrappers_set.glb",
+      "draco": true
+    },
+    "hanging_cords_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/hanging_cords_set.glb",
+      "draco": true
+    },
+    "cleaning_supplies_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/cleaning_supplies_set.glb",
+      "draco": true
+    },
+    "red_used_mechanic_rags_flat": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/red_used_mechanic_rags_flat.glb",
+      "draco": true
+    },
+    "red_used_mechanic_rags_wadded": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/red_used_mechanic_rags_wadded.glb",
+      "draco": true
+    },
+    "wadded_kleenex_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/wadded_kleenex_set.glb",
+      "draco": true
+    },
+    "old_newspapers_stack": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/old_newspapers_stack.glb",
+      "draco": true
+    },
+    "personal_objects_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/personal_objects_set.glb",
+      "draco": true
+    },
+    "broken_ceramic_set": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/broken_ceramic_set.glb",
+      "draco": true
+    },
+    "covered_furniture_chair": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/covered_furniture_chair.glb",
+      "draco": true
+    },
+    "covered_furniture_sofa": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/covered_furniture_sofa.glb",
+      "draco": true
+    },
+    "basement_utility_pipes": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/basement_utility_pipes.glb",
+      "draco": true
+    },
+    "basement_utility_water_heater": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/basement_utility_water_heater.glb",
+      "draco": true
+    },
+    "basement_utility_electrical_panel": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/basement_utility_electrical_panel.glb",
+      "draco": true
+    },
+    "outdoor_fence_picket": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_fence_picket.glb",
+      "draco": true
+    },
+    "outdoor_fence_privacy": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_fence_privacy.glb",
+      "draco": true
+    },
+    "outdoor_fence_chainlink": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_fence_chainlink.glb",
+      "draco": true
+    },
+    "outdoor_gate_wood": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_gate_wood.glb",
+      "draco": true
+    },
+    "outdoor_gate_chainlink": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_gate_chainlink.glb",
+      "draco": true
+    },
+    "outdoor_shed_weathered": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_shed_weathered.glb",
+      "draco": true
+    },
+    "outdoor_trash_can": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_trash_can.glb",
+      "draco": true
+    },
+    "outdoor_barrel": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_barrel.glb",
+      "draco": true
+    },
+    "outdoor_tire": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_tire.glb",
+      "draco": true
+    },
+    "outdoor_wheelbarrow": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_wheelbarrow.glb",
+      "draco": true
+    },
+    "outdoor_bench": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_bench.glb",
+      "draco": true
+    },
+    "outdoor_picnic_table": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_picnic_table.glb",
+      "draco": true
+    },
+    "outdoor_tree": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_tree.glb",
+      "draco": true
+    },
+    "outdoor_bush": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_bush.glb",
+      "draco": true
+    },
+    "outdoor_tall_grass": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_tall_grass.glb",
+      "draco": true
+    },
+    "outdoor_fire_pit": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_fire_pit.glb",
+      "draco": true
+    },
+    "outdoor_bird_bath": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_bird_bath.glb",
+      "draco": true
+    },
+    "outdoor_garden_hose": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_garden_hose.glb",
+      "draco": true
+    },
+    "outdoor_keep_out_sign": {
+      "type": "model",
+      "fallback": "prop",
+      "status": "placeholder",
+      "path": "/assets/models/props/clutter/outdoor_keep_out_sign.glb",
+      "draco": true
+    },
+    "decal_dirt": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_dirt.png"
+    },
+    "decal_water_stains": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_water_stains.png"
+    },
+    "decal_scratches": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_scratches.png"
+    },
+    "decal_blood_smears": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_blood_smears.png"
+    },
+    "decal_cracks": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_cracks.png"
+    },
+    "decal_mold": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_mold.png"
+    },
+    "decal_footprints": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_footprints.png"
+    },
+    "decal_wallpaper_tears": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/decal_wallpaper_tears.png"
+    },
+    "texture_wood_floor": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_wood_floor.png"
+    },
+    "texture_carpet": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_carpet.png"
+    },
+    "texture_peeling_wallpaper": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_peeling_wallpaper.png"
+    },
+    "texture_plaster_wall": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_plaster_wall.png"
+    },
+    "texture_router_plastic": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_router_plastic.png"
+    },
+    "texture_wardrobe_wood": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_wardrobe_wood.png"
+    },
+    "texture_window_glass_dirty": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_window_glass_dirty.png"
+    },
+    "texture_killer_janitor": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_killer_janitor.png"
+    },
+    "texture_player_blue_plaid": {
+      "type": "texture",
+      "fallback": "decal",
+      "status": "placeholder",
+      "path": "/assets/textures/environment/texture_player_blue_plaid.png"
+    },
+    "warning_note_stay_out": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/warning_note_stay_out.png"
+    },
+    "prescription_label_generic": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/prescription_label_generic.png"
+    },
+    "utility_label_high_voltage": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/utility_label_high_voltage.png"
+    },
+    "family_photo_picture_art": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/family_photo_picture_art.png"
+    },
+    "handwritten_note_dont_forget_pills": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/handwritten_note_dont_forget_pills.png"
+    },
+    "mail_envelope_old": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/mail_envelope_old.png"
+    },
+    "receipt_past_due": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/receipt_past_due.png"
+    },
+    "map_floor_plan": {
+      "type": "texture",
+      "fallback": "paper",
+      "status": "placeholder",
+      "path": "/assets/textures/storytelling/map_floor_plan.png"
+    },
+    "ui_phone_frame": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_frame.png"
+    },
+    "ui_phone_screen_blank": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_screen_blank.png"
+    },
+    "ui_phone_screen_calling_green": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_screen_calling_green.png"
+    },
+    "ui_phone_screen_security_static": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_screen_security_static.png"
+    },
+    "ui_phone_battery_12": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_battery_12.png"
+    },
+    "ui_phone_battery_critical": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_battery_critical.png"
+    },
+    "ui_phone_signal_bars": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_phone_signal_bars.png"
+    },
+    "ui_icon_camera": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_icon_camera.png"
+    },
+    "ui_icon_call_green": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_icon_call_green.png"
+    },
+    "ui_icon_end_call_red": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_icon_end_call_red.png"
+    },
+    "ui_icon_message": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_icon_message.png"
+    },
+    "ui_icon_power_off": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_icon_power_off.png"
+    },
+    "ui_camera_scanlines": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_camera_scanlines.png"
+    },
+    "ui_camera_rec_indicator": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_camera_rec_indicator.png"
+    },
+    "ui_stamina_bar_frame": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_stamina_bar_frame.png"
+    },
+    "ui_stamina_bar_fill": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_stamina_bar_fill.png"
+    },
+    "ui_sprint_button": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_sprint_button.png"
+    },
+    "ui_interact_prompt": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_interact_prompt.png"
+    },
+    "ui_vignette_safe": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_vignette_safe.png"
+    },
+    "ui_vignette_danger": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_vignette_danger.png"
+    },
+    "ui_objective_pills": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_objective_pills.png"
+    },
+    "ui_title_screen": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_title_screen.png"
+    },
+    "ui_game_over_screen": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_game_over_screen.png"
+    },
+    "ui_win_screen": {
+      "type": "ui",
+      "fallback": "ui",
+      "status": "placeholder",
+      "path": "/assets/ui/ui_win_screen.png"
+    },
+    "audio_player_breath_calm": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_player_breath_calm.ogg"
+    },
+    "audio_player_breath_sprint": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_player_breath_sprint.ogg"
+    },
+    "audio_player_breath_exhausted": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_player_breath_exhausted.ogg"
+    },
+    "audio_player_gasp": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_player_gasp.ogg"
+    },
+    "audio_footstep_player_wood_01": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_footstep_player_wood_01.ogg"
+    },
+    "audio_footstep_player_carpet_01": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_footstep_player_carpet_01.ogg"
+    },
+    "audio_footstep_killer_walk_01": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_footstep_killer_walk_01.ogg"
+    },
+    "audio_footstep_killer_chase_01": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_footstep_killer_chase_01.ogg"
+    },
+    "audio_killer_voice_talk_to_ya": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_killer_voice_talk_to_ya.ogg"
+    },
+    "audio_killer_voice_vick": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_killer_voice_vick.ogg"
+    },
+    "audio_killer_voice_blinks_off": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_killer_voice_blinks_off.ogg"
+    },
+    "audio_killer_voice_frenzy_scream": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_killer_voice_frenzy_scream.ogg"
+    },
+    "audio_phone_ringtone": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_phone_ringtone.ogg"
+    },
+    "audio_phone_text_chime": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_phone_text_chime.ogg"
+    },
+    "audio_phone_call_connect": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_phone_call_connect.ogg"
+    },
+    "audio_phone_power_off": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_phone_power_off.ogg"
+    },
+    "audio_tv_static_on": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_tv_static_on.ogg"
+    },
+    "audio_router_disconnect": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_router_disconnect.ogg"
+    },
+    "audio_wardrobe_open": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_wardrobe_open.ogg"
+    },
+    "audio_wardrobe_close": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_wardrobe_close.ogg"
+    },
+    "audio_blinds_snap": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_blinds_snap.ogg"
+    },
+    "audio_pill_pickup": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_pill_pickup.ogg"
+    },
+    "audio_exit_door_open": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_exit_door_open.ogg"
+    },
+    "audio_ui_click": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_ui_click.ogg"
+    },
+    "audio_game_over_sting": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_game_over_sting.ogg"
+    },
+    "audio_victory_sting": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_victory_sting.ogg"
+    },
+    "audio_ambience_mansion": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_ambience_mansion.ogg"
+    },
+    "audio_ambience_basement": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_ambience_basement.ogg"
+    },
+    "audio_tension_safe": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_tension_safe.ogg"
+    },
+    "audio_tension_chase": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_tension_chase.ogg"
+    },
+    "audio_heartbeat_panic": {
+      "type": "audio",
+      "fallback": "audio",
+      "status": "placeholder",
+      "path": "/assets/audio/audio_heartbeat_panic.ogg"
+    }
+  }
+}

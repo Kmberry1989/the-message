@@ -1,0 +1,7 @@
+{
+  "id": "prescription_label_generic",
+  "expectedFile": "prescription_label_generic.png",
+  "type": "texture",
+  "fallback": "paper",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

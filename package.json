@@ -1,0 +1,19 @@
+{
+  "name": "did-you-get-my-message",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Mobile-first Three.js survival horror FPS prototype with Draco GLB loading, placeholder assets, and runtime fallbacks.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "check": "node prototype-check.js"
+  },
+  "dependencies": {
+    "@vitejs/plugin-basic-ssl": "latest",
+    "vite": "^5.4.11",
+    "three": "^0.166.1"
+  },
+  "devDependencies": {}
+}

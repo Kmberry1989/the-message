@@ -1,0 +1,7 @@
+{
+  "id": "decal_scratches",
+  "expectedFile": "decal_scratches.png",
+  "type": "texture",
+  "fallback": "decal",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

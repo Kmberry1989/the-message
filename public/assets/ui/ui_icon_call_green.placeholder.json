@@ -1,0 +1,7 @@
+{
+  "id": "ui_icon_call_green",
+  "expectedFile": "ui_icon_call_green.png",
+  "type": "ui",
+  "fallback": "ui",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

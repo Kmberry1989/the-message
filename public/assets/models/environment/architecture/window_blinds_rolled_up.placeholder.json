@@ -1,0 +1,7 @@
+{
+  "id": "window_blinds_rolled_up",
+  "expectedFile": "window_blinds_rolled_up.glb",
+  "type": "model",
+  "fallback": "architecture",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

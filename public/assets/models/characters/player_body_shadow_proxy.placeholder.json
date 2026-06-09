@@ -1,0 +1,7 @@
+{
+  "id": "player_body_shadow_proxy",
+  "expectedFile": "player_body_shadow_proxy.glb",
+  "type": "model",
+  "fallback": "humanoid",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

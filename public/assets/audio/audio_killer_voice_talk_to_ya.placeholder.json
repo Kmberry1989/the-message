@@ -1,0 +1,7 @@
+{
+  "id": "audio_killer_voice_talk_to_ya",
+  "expectedFile": "audio_killer_voice_talk_to_ya.ogg",
+  "type": "audio",
+  "fallback": "audio",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

@@ -1,0 +1,7 @@
+{
+  "id": "mail_envelope_old",
+  "expectedFile": "mail_envelope_old.png",
+  "type": "texture",
+  "fallback": "paper",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

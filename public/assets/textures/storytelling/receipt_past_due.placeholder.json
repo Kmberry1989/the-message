@@ -1,0 +1,7 @@
+{
+  "id": "receipt_past_due",
+  "expectedFile": "receipt_past_due.png",
+  "type": "texture",
+  "fallback": "paper",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

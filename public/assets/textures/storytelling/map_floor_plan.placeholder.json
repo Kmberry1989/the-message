@@ -1,0 +1,7 @@
+{
+  "id": "map_floor_plan",
+  "expectedFile": "map_floor_plan.png",
+  "type": "texture",
+  "fallback": "paper",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

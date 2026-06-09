@@ -1,0 +1,7 @@
+{
+  "id": "mailbox_rural_blue_flag_down",
+  "expectedFile": "mailbox_rural_blue_flag_down.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

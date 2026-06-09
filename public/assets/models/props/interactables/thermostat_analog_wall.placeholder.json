@@ -1,0 +1,7 @@
+{
+  "id": "thermostat_analog_wall",
+  "expectedFile": "thermostat_analog_wall.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

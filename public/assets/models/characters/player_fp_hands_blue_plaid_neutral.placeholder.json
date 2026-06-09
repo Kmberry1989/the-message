@@ -1,0 +1,7 @@
+{
+  "id": "player_fp_hands_blue_plaid_neutral",
+  "expectedFile": "player_fp_hands_blue_plaid_neutral.glb",
+  "type": "model",
+  "fallback": "humanoid",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

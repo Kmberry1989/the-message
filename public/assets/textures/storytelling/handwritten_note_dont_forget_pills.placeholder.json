@@ -1,0 +1,7 @@
+{
+  "id": "handwritten_note_dont_forget_pills",
+  "expectedFile": "handwritten_note_dont_forget_pills.png",
+  "type": "texture",
+  "fallback": "paper",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

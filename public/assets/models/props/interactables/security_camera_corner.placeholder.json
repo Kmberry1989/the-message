@@ -1,0 +1,7 @@
+{
+  "id": "security_camera_corner",
+  "expectedFile": "security_camera_corner.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

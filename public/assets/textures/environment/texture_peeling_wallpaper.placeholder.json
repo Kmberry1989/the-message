@@ -1,0 +1,7 @@
+{
+  "id": "texture_peeling_wallpaper",
+  "expectedFile": "texture_peeling_wallpaper.png",
+  "type": "texture",
+  "fallback": "decal",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

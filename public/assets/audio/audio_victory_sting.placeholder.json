@@ -1,0 +1,7 @@
+{
+  "id": "audio_victory_sting",
+  "expectedFile": "audio_victory_sting.ogg",
+  "type": "audio",
+  "fallback": "audio",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

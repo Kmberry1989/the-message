@@ -1,0 +1,7 @@
+{
+  "id": "ui_phone_battery_critical",
+  "expectedFile": "ui_phone_battery_critical.png",
+  "type": "ui",
+  "fallback": "ui",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

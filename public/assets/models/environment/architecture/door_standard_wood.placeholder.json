@@ -1,0 +1,7 @@
+{
+  "id": "door_standard_wood",
+  "expectedFile": "door_standard_wood.glb",
+  "type": "model",
+  "fallback": "architecture",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

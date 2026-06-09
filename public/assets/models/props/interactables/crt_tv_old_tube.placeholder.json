@@ -1,0 +1,7 @@
+{
+  "id": "crt_tv_old_tube",
+  "expectedFile": "crt_tv_old_tube.glb",
+  "type": "model",
+  "fallback": "prop",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}

@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "id": "level-01-mansion",
+    "name": "Level 01 - The Mansion",
+    "theme": "old_mansion",
+    "version": "0.2.0"
+  },
+  "visualScene": "mansion_room_shell",
+  "spawnPoints": {
+    "player": {
+      "x": 2,
+      "z": 2,
+      "rotation": 0
+    },
+    "killer": {
+      "x": 15,
+      "z": 9,
+      "rotation": 180
+    }
+  },
+  "grid": [
+    "####################",
+    "#..P.....#......C..#",
+    "#........#.........#",
+    "#..W.....#....T....#",
+    "#.............R....#",
+    "#....B...#.........#",
+    "#........#....P....#",
+    "#....C...#.........#",
+    "#.............M....#",
+    "#.....P.....W....E.#",
+    "####################"
+  ],
+  "legend": {
+    "#": "wall",
+    ".": "floor",
+    "P": "pill",
+    "W": "wardrobe",
+    "T": "tv",
+    "C": "security_camera",
+    "R": "router",
+    "B": "blinds_window",
+    "M": "mailbox",
+    "E": "exit"
+  },
+  "objects": [
+    {
+      "id": "pill_foyer",
+      "type": "pill",
+      "asset": "medicine_pill_bottle_cyan",
+      "x": 3,
+      "z": 1,
+      "required": true
+    },
+    {
+      "id": "pill_library",
+      "type": "pill",
+      "asset": "medicine_pill_bottle_cyan",
+      "x": 14,
+      "z": 6,
+      "required": true
+    },
+    {
+      "id": "pill_back_hall",
+      "type": "pill",
+      "asset": "medicine_pill_bottle_cyan",
+      "x": 6,
+      "z": 9,
+      "required": true
+    },
+    {
+      "id": "wardrobe_hall",
+      "type": "wardrobe",
+      "asset": "wardrobe_antique_closed",
+      "x": 3,
+      "z": 3,
+      "rotation": 90
+    },
+    {
+      "id": "wardrobe_back",
+      "type": "wardrobe",
+      "asset": "wardrobe_antique_closed",
+      "x": 15,
+      "z": 9,
+      "rotation": 180
+    },
+    {
+      "id": "tv_living_room",
+      "type": "distraction",
+      "asset": "crt_tv_old_tube",
+      "x": 14,
+      "z": 3,
+      "rotation": 180,
+      "distractionRadius": 18
+    },
+    {
+      "id": "router_den",
+      "type": "router",
+      "asset": "wifi_router_black_on",
+      "x": 14,
+      "z": 4,
+      "rotation": 180,
+      "triggersFrenzy": true
+    },
+    {
+      "id": "mailbox_outside",
+      "type": "distraction",
+      "asset": "mailbox_rural_blue_flag_down",
+      "x": 14,
+      "z": 8,
+      "rotation": 0
+    },
+    {
+      "id": "window_blinds_01",
+      "type": "blinds_window",
+      "asset": "window_blinds_rolled_down_open",
+      "x": 5,
+      "z": 5,
+      "rotation": 180,
+      "blocksSightWhenClosed": true
+    },
+    {
+      "id": "exit_back_door",
+      "type": "exit",
+      "asset": "door_exit_back",
+      "x": 17,
+      "z": 9,
+      "rotation": 90
+    },
+    {
+      "id": "cam_foyer",
+      "type": "security_camera",
+      "asset": "security_camera_dome",
+      "x": 5,
+      "z": 7,
+      "rotation": 45,
+      "label": "CAM 1 - FOYER"
+    },
+    {
+      "id": "cam_hall",
+      "type": "security_camera",
+      "asset": "security_camera_bullet",
+      "x": 17,
+      "z": 1,
+      "rotation": 225,
+      "label": "CAM 2 - HALL"
+    }
+  ],
+  "setDressing": [
+    {
+      "id": "bedroom_set",
+      "asset": "bedroom_bed",
+      "x": 2,
+      "z": 8
+    },
+    {
+      "id": "rag_pile",
+      "asset": "red_used_mechanic_rags_wadded",
+      "x": 10,
+      "z": 2
+    },
+    {
+      "id": "tissue_pile",
+      "asset": "wadded_kleenex_set",
+      "x": 12,
+      "z": 8
+    },
+    {
+      "id": "trash",
+      "asset": "trash_bag_black",
+      "x": 16,
+      "z": 5
+    },
+    {
+      "id": "newspapers",
+      "asset": "old_newspapers_stack",
+      "x": 7,
+      "z": 4
+    }
+  ],
+  "patrolNodes": [
+    {
+      "id": "p1",
+      "x": 15,
+      "z": 9
+    },
+    {
+      "id": "p2",
+      "x": 11,
+      "z": 5
+    },
+    {
+      "id": "p3",
+      "x": 4,
+      "z": 7
+    },
+    {
+      "id": "p4",
+      "x": 17,
+      "z": 1
+    }
+  ],
+  "cameraFeeds": [
+    {
+      "id": "cam_foyer",
+      "label": "CAM 1 - FOYER",
+      "objectId": "cam_foyer"
+    },
+    {
+      "id": "cam_hall",
+      "label": "CAM 2 - HALL",
+      "objectId": "cam_hall"
+    }
+  ],
+  "lighting": {
+    "ambient": "#444455",
+    "fogColor": "#050508",
+    "fogDensity": 0.055
+  },
+  "audio": {
+    "ambience": "audio_ambience_mansion",
+    "chase": "audio_tension_chase"
+  },
+  "difficulty": {
+    "phoneBattery": 12,
+    "killerPatrolSpeed": 1.35,
+    "killerChaseSpeed": 3.9,
+    "frenzyMultiplier": 1.8,
+    "incomingCallChance": 0.0025
+  },
+  "winCondition": {
+    "requiredPills": 3,
+    "exitObjectId": "exit_back_door"
+  }
+}

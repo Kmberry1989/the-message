@@ -1,0 +1,7 @@
+{
+  "id": "texture_window_glass_dirty",
+  "expectedFile": "texture_window_glass_dirty.png",
+  "type": "texture",
+  "fallback": "decal",
+  "note": "Replace this placeholder sidecar with the real asset file. Runtime falls back when the real file is missing."
+}
