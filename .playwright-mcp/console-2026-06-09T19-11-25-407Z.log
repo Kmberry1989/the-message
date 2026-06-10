@@ -1,0 +1,44 @@
+[     260ms] [WARNING] [fallback-model-path] crt_tv_old_tube at /assets/models/props/crt-tv.glb Error: THREE.GLTFLoader: setMeshoptDecoder must be called before loading compressed files
+    at GLTFMeshoptCompression.loadBufferView (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:925:17)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1602:46
+    at GLTFParser._invokeOne (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1558:22)
+    at GLTFParser.getDependency (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1601:29)
+    at GLTFParser.loadAccessor (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1711:36)
+    at GLTFParser.getDependency (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1598:29)
+    at assignAttributeAccessor (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2586:19)
+    at addPrimitiveAttributes (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2593:18)
+    at GLTFParser.loadGeometries (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2080:29)
+    at GLTFParser.loadMesh (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2104:25) @ http://127.0.0.1:4174/src/asset-system.js?t=1781032283826:143
+[     403ms] [WARNING] [fallback-model-path] window_blinds_rolled_down_open at /assets/models/props/interactables/blinds_open.glb Error: THREE.GLTFLoader: setMeshoptDecoder must be called before loading compressed files
+    at GLTFMeshoptCompression.loadBufferView (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:925:17)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1602:46
+    at GLTFParser._invokeOne (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1558:22)
+    at GLTFParser.getDependency (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1601:29)
+    at GLTFParser.loadAccessor (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1711:36)
+    at GLTFParser.getDependency (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:1598:29)
+    at assignAttributeAccessor (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2586:19)
+    at addPrimitiveAttributes (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2593:18)
+    at GLTFParser.loadGeometries (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2080:29)
+    at GLTFParser.loadMesh (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_GLTFLoader__js.js?v=d008ca26:2104:25) @ http://127.0.0.1:4174/src/asset-system.js?t=1781032283826:143
+[     690ms] [WARNING] THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights. @ http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:3076
+[     778ms] [WARNING] [fallback-animation] chase at /assets/models/characters/killer/animations/chase.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=d008ca26:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032283826:213
+[     869ms] [WARNING] [fallback-animation] stunned at /assets/models/characters/killer/animations/stunned.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=d008ca26:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=d008ca26:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032283826:213
+[   15064ms] [WARNING] THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights. @ http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:3076
+[   15173ms] [WARNING] [fallback-animation] chase at /assets/models/characters/killer/animations/chase.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[   15270ms] [WARNING] [fallback-animation] stunned at /assets/models/characters/killer/animations/stunned.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215

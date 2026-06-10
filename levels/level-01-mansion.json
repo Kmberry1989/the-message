@@ -3,220 +3,292 @@
     "id": "level-01-mansion",
     "name": "Level 01 - The Mansion",
     "theme": "old_mansion",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "visualScene": "mansion_room_shell",
   "killerAsset": "killer_creeper",
   "spawnPoints": {
     "player": {
-      "x": 2,
-      "z": 2,
+      "x": 3,
+      "z": 10,
       "rotation": 0
     },
     "killer": {
-      "x": 15,
-      "z": 9,
+      "x": 4,
+      "z": 3,
       "rotation": 180
     }
   },
   "grid": [
     "####################",
-    "#..P.....#......C..#",
-    "#........#.........#",
-    "#..W.....#....T....#",
-    "#.............R....#",
-    "#....B...#.........#",
-    "#........#....P....#",
-    "#....C...#.........#",
-    "#.............M....#",
-    "#.....P.....W....E.#",
+    "#......##.........##",
+    "#......##.........##",
+    "#......##.........##",
+    "#.................##",
+    "#######.#####......#",
+    "#######.#####......#",
+    "#...........#......#",
+    "#...........#......#",
+    "#..................#",
+    "#..................#",
+    "#...........########",
     "####################"
   ],
-  "legend": {
-    "#": "wall",
-    ".": "floor",
-    "P": "pill",
-    "W": "wardrobe",
-    "T": "tv",
-    "C": "security_camera",
-    "R": "router",
-    "B": "blinds_window",
-    "M": "mailbox",
-    "E": "exit"
-  },
+  "rooms": [
+    {
+      "id": "bedroom",
+      "type": "bedroom",
+      "rect": { "x": 1, "z": 1, "w": 6, "h": 4 },
+      "lightingPreset": "warm_dim",
+      "anchors": [
+        { "id": "killer_bed", "x": 4, "z": 3, "rotation": 180 },
+        { "id": "bedside_lamp", "x": 2, "z": 4, "rotation": 0 },
+        { "id": "bedroom_rug", "x": 4, "z": 4, "rotation": 0 }
+      ],
+      "clutterZones": [
+        { "id": "bedroom_corner", "x": 1, "z": 1, "w": 2, "h": 2 }
+      ]
+    },
+    {
+      "id": "hallway",
+      "type": "hallway",
+      "rect": { "x": 7, "z": 4, "w": 5, "h": 8 },
+      "lightingPreset": "neutral",
+      "anchors": [
+        { "id": "hall_camera", "x": 8, "z": 8, "rotation": 45 },
+        { "id": "hall_pill", "x": 9, "z": 10, "rotation": 0 }
+      ],
+      "clutterZones": [
+        { "id": "hall_edge", "x": 10, "z": 7, "w": 2, "h": 2 }
+      ]
+    },
+    {
+      "id": "living_room",
+      "type": "living_room",
+      "rect": { "x": 10, "z": 1, "w": 8, "h": 4 },
+      "lightingPreset": "cold_moon",
+      "anchors": [
+        { "id": "tv_wall", "x": 15, "z": 2, "rotation": 180 },
+        { "id": "sofa_center", "x": 12, "z": 3, "rotation": 180 },
+        { "id": "chair_corner", "x": 16, "z": 4, "rotation": 180 },
+        { "id": "living_camera", "x": 17, "z": 2, "rotation": 225 }
+      ],
+      "clutterZones": [
+        { "id": "living_clutter", "x": 13, "z": 3, "w": 2, "h": 2 }
+      ]
+    },
+    {
+      "id": "den",
+      "type": "den",
+      "rect": { "x": 13, "z": 5, "w": 6, "h": 6 },
+      "lightingPreset": "warm_pool",
+      "anchors": [
+        { "id": "router_shelf", "x": 15, "z": 6, "rotation": 180 },
+        { "id": "den_lamp", "x": 17, "z": 8, "rotation": 0 },
+        { "id": "exit_anchor", "x": 18, "z": 10, "rotation": 90 },
+        { "id": "den_pill", "x": 14, "z": 9, "rotation": 0 }
+      ],
+      "clutterZones": [
+        { "id": "den_floor_clutter", "x": 15, "z": 8, "w": 2, "h": 2 }
+      ]
+    },
+    {
+      "id": "foyer",
+      "type": "foyer",
+      "rect": { "x": 1, "z": 7, "w": 6, "h": 5 },
+      "lightingPreset": "neutral",
+      "anchors": [
+        { "id": "wardrobe_foyer", "x": 2, "z": 8, "rotation": 90 },
+        { "id": "foyer_pill", "x": 3, "z": 10, "rotation": 0 },
+        { "id": "window_foyer", "x": 6, "z": 9, "rotation": 180 }
+      ],
+      "clutterZones": [
+        { "id": "foyer_corner", "x": 5, "z": 7, "w": 2, "h": 2 }
+      ]
+    }
+  ],
+  "connections": [
+    { "from": "bedroom", "to": "hallway", "at": { "x": 7, "z": 4 } },
+    { "from": "hallway", "to": "living_room", "at": { "x": 9, "z": 4 } },
+    { "from": "hallway", "to": "den", "at": { "x": 12, "z": 9 } },
+    { "from": "hallway", "to": "foyer", "at": { "x": 7, "z": 9 } }
+  ],
   "objects": [
     {
       "id": "pill_foyer",
       "type": "pill",
       "asset": "medicine_pill_bottle_cyan",
-      "x": 3,
-      "z": 1,
+      "roomId": "foyer",
+      "anchorId": "foyer_pill",
       "required": true
     },
     {
-      "id": "pill_library",
+      "id": "pill_hall",
       "type": "pill",
       "asset": "medicine_pill_bottle_cyan",
-      "x": 14,
-      "z": 6,
+      "roomId": "hallway",
+      "anchorId": "hall_pill",
       "required": true
     },
     {
-      "id": "pill_back_hall",
+      "id": "pill_den",
       "type": "pill",
       "asset": "medicine_pill_bottle_cyan",
-      "x": 6,
-      "z": 9,
+      "roomId": "den",
+      "anchorId": "den_pill",
       "required": true
     },
     {
-      "id": "wardrobe_hall",
+      "id": "wardrobe_foyer_obj",
       "type": "wardrobe",
       "asset": "wardrobe_antique_closed",
-      "x": 3,
-      "z": 3,
-      "rotation": 90
+      "roomId": "foyer",
+      "anchorId": "wardrobe_foyer"
     },
     {
       "id": "wardrobe_back",
       "type": "wardrobe",
       "asset": "wardrobe_antique_closed",
-      "x": 15,
-      "z": 9,
+      "x": 14,
+      "z": 10,
       "rotation": 180
     },
     {
       "id": "tv_living_room",
       "type": "distraction",
       "asset": "crt_tv_old_tube",
-      "x": 14,
-      "z": 3,
-      "rotation": 180,
+      "roomId": "living_room",
+      "anchorId": "tv_wall",
       "distractionRadius": 18
     },
     {
       "id": "router_den",
       "type": "router",
       "asset": "wifi_router_black_on",
-      "x": 14,
-      "z": 4,
-      "rotation": 180,
+      "roomId": "den",
+      "anchorId": "router_shelf",
       "triggersFrenzy": true
-    },
-    {
-      "id": "mailbox_outside",
-      "type": "distraction",
-      "asset": "mailbox_rural_blue_flag_down",
-      "x": 14,
-      "z": 8,
-      "rotation": 0
     },
     {
       "id": "window_blinds_01",
       "type": "blinds_window",
       "asset": "window_blinds_rolled_down_open",
-      "x": 5,
-      "z": 5,
-      "rotation": 180,
+      "roomId": "foyer",
+      "anchorId": "window_foyer",
       "blocksSightWhenClosed": true
     },
     {
       "id": "exit_back_door",
       "type": "exit",
       "asset": "door_exit_back",
-      "x": 17,
-      "z": 9,
-      "rotation": 90
-    },
-    {
-      "id": "cam_foyer",
-      "type": "security_camera",
-      "asset": "security_camera_dome",
-      "x": 5,
-      "z": 7,
-      "rotation": 45,
-      "label": "CAM 1 - FOYER"
+      "roomId": "den",
+      "anchorId": "exit_anchor"
     },
     {
       "id": "cam_hall",
       "type": "security_camera",
+      "asset": "security_camera_dome",
+      "roomId": "hallway",
+      "anchorId": "hall_camera",
+      "label": "CAM 1 - HALL"
+    },
+    {
+      "id": "cam_living",
+      "type": "security_camera",
       "asset": "security_camera_bullet",
-      "x": 17,
-      "z": 1,
-      "rotation": 225,
-      "label": "CAM 2 - HALL"
+      "roomId": "living_room",
+      "anchorId": "living_camera",
+      "label": "CAM 2 - LIVING"
     }
   ],
   "setDressing": [
     {
       "id": "bedroom_set",
       "asset": "bedroom_bed",
-      "x": 2,
-      "z": 8
+      "roomId": "bedroom",
+      "anchorId": "killer_bed"
+    },
+    {
+      "id": "killer_bed",
+      "asset": "bedroom_bed",
+      "roomId": "bedroom",
+      "anchorId": "killer_bed"
+    },
+    {
+      "id": "bedside_lamp_prop",
+      "asset": "lamp_table",
+      "roomId": "bedroom",
+      "anchorId": "bedside_lamp"
+    },
+    {
+      "id": "bedroom_rug_prop",
+      "asset": "rug_persian_worn",
+      "roomId": "bedroom",
+      "anchorId": "bedroom_rug"
+    },
+    {
+      "id": "living_sofa",
+      "asset": "sofa_antique",
+      "roomId": "living_room",
+      "anchorId": "sofa_center"
+    },
+    {
+      "id": "living_chair",
+      "asset": "chair_tufted",
+      "roomId": "living_room",
+      "anchorId": "chair_corner"
+    },
+    {
+      "id": "den_lamp_prop",
+      "asset": "lamp_floor",
+      "roomId": "den",
+      "anchorId": "den_lamp"
     },
     {
       "id": "rag_pile",
       "asset": "red_used_mechanic_rags_wadded",
+      "roomId": "hallway",
       "x": 10,
-      "z": 2
+      "z": 8
     },
     {
       "id": "tissue_pile",
       "asset": "wadded_kleenex_set",
-      "x": 12,
-      "z": 8
+      "roomId": "bedroom",
+      "x": 2,
+      "z": 2
     },
     {
       "id": "trash",
       "asset": "trash_bag_black",
+      "roomId": "den",
       "x": 16,
-      "z": 5
+      "z": 9
     },
     {
       "id": "newspapers",
       "asset": "old_newspapers_stack",
-      "x": 7,
-      "z": 4
-    }
-  ],
-  "patrolNodes": [
-    {
-      "id": "p1",
-      "x": 15,
-      "z": 9
-    },
-    {
-      "id": "p2",
-      "x": 11,
-      "z": 5
-    },
-    {
-      "id": "p3",
-      "x": 4,
-      "z": 7
-    },
-    {
-      "id": "p4",
-      "x": 17,
-      "z": 1
+      "roomId": "foyer",
+      "x": 5,
+      "z": 8
     }
   ],
   "cameraFeeds": [
     {
-      "id": "cam_foyer",
-      "label": "CAM 1 - FOYER",
-      "objectId": "cam_foyer"
+      "id": "cam_hall",
+      "label": "CAM 1 - HALL",
+      "objectId": "cam_hall"
     },
     {
-      "id": "cam_hall",
-      "label": "CAM 2 - HALL",
-      "objectId": "cam_hall"
+      "id": "cam_living",
+      "label": "CAM 2 - LIVING",
+      "objectId": "cam_living"
     }
   ],
   "lighting": {
-    "ambient": "#444455",
-    "fogColor": "#050508",
-    "fogDensity": 0.055
+    "ambient": "#c5ced8",
+    "fogColor": "#414851",
+    "fogDensity": 0.016
   },
   "audio": {
     "ambience": "audio_ambience_mansion",
@@ -224,9 +296,9 @@
   },
   "difficulty": {
     "phoneBattery": 12,
-    "killerPatrolSpeed": 0.92,
-    "killerChaseSpeed": 1.82,
-    "frenzyMultiplier": 1.28,
+    "killerPatrolSpeed": 1.2,
+    "killerChaseSpeed": 1.75,
+    "frenzyMultiplier": 1.08,
     "incomingCallChance": 0.0025
   },
   "winCondition": {

@@ -15,6 +15,10 @@ canvas { display:block; width:100%; height:100%; }
 #controls { position:absolute; bottom:18px; left:18px; right:18px; display:flex; justify-content:space-between; align-items:flex-end; }
 .btn { pointer-events:auto; user-select:none; border:1px solid rgba(255,255,255,.2); background:rgba(20,22,24,.76); color:#f1eee8; border-radius:999px; padding:16px 20px; font-weight:800; letter-spacing:.08em; min-width:86px; text-align:center; }
 .btn:active { transform:translateY(1px); background:rgba(70,75,80,.9); }
+#joystick { position:absolute; left:18px; bottom:92px; width:128px; height:128px; pointer-events:none; opacity:0; transition:opacity .15s; }
+#joystick.active { opacity:1; }
+#joystickBase { position:absolute; inset:0; border-radius:50%; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.18); backdrop-filter:blur(6px); }
+#joystickKnob { position:absolute; left:44px; top:44px; width:40px; height:40px; border-radius:50%; background:rgba(244,241,232,.55); border:2px solid rgba(255,255,255,.32); }
 #phone { pointer-events:auto; position:absolute; right:18px; bottom:86px; width:210px; height:380px; border-radius:28px; background:#050507; border:8px solid #1a1b1d; box-shadow:0 14px 45px rgba(0,0,0,.8); display:none; overflow:hidden; }
 #phone.on { display:block; }
 #phoneScreen { position:absolute; inset:10px; border-radius:18px; background:#06140b; overflow:hidden; color:#e9fff1; }

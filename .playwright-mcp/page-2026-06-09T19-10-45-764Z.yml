@@ -1,0 +1,10 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - generic: Pills 0/3
+      - generic: Five quiet minutes.
+    - generic: Tap a floor tile to move. Drag to look. The house is lit now, but it is not safe.
+    - generic: Incoming call...
+    - generic:
+      - generic [ref=e3]: PHONE
+      - generic [ref=e4]: SPRINT

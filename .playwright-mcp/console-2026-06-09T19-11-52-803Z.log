@@ -1,0 +1,35 @@
+[     846ms] [WARNING] THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights. @ http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:3076
+[     962ms] [WARNING] [fallback-animation] chase at /assets/models/characters/killer/animations/chase.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[    1084ms] [WARNING] [fallback-animation] stunned at /assets/models/characters/killer/animations/stunned.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[  260601ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:4174/favicon.ico:0
+[  411046ms] [WARNING] THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights. @ http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:3076
+[  411134ms] [WARNING] [fallback-animation] chase at /assets/models/characters/killer/animations/chase.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[  411222ms] [WARNING] [fallback-animation] stunned at /assets/models/characters/killer/animations/stunned.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[  419657ms] [WARNING] THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights. @ http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:3076
+[  419728ms] [WARNING] [fallback-animation] chase at /assets/models/characters/killer/animations/chase.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[  419802ms] [WARNING] [fallback-animation] stunned at /assets/models/characters/killer/animations/stunned.fbx Error: THREE.FBXLoader: Cannot find the version number for the file given.
+    at getFbxVersion (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:4332:9)
+    at FBXLoader.parse (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2112:11)
+    at Object.onLoad (http://127.0.0.1:4174/node_modules/.vite/deps/three_examples_jsm_loaders_FBXLoader__js.js?v=f822d9a3:2093:22)
+    at http://127.0.0.1:4174/node_modules/.vite/deps/chunk-DEEFU7IG.js?v=f822d9a3:25493:39 @ http://127.0.0.1:4174/src/asset-system.js?t=1781032297218:215
+[  459699ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:4174/favicon.ico:0

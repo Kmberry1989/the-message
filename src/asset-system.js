@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 const KILLER_ANIMS = {
   idle: '/assets/models/characters/killer/animations/idle.fbx',
@@ -46,6 +48,11 @@ const RECORD_OVERRIDES = {
   window_blinds_rolled_down_open: { path: '/assets/models/props/interactables/blinds_open.glb' },
   window_blinds_closed: { path: '/assets/models/props/interactables/blinds_closed.glb' },
   bedroom_bed: { path: '/assets/models/props/furniture/bed.glb' },
+  lamp_floor: { path: '/assets/models/props/lamp.glb' },
+  lamp_table: { path: '/assets/models/props/lamp.glb' },
+  rug_persian_worn: { path: '/assets/models/props/rug.glb' },
+  sofa_antique: { path: '/assets/models/props/fancy_sofa.glb' },
+  chair_tufted: { path: '/assets/models/props/outdoor_chair.glb' },
   red_used_mechanic_rags_wadded: { path: '/assets/models/props/trash_filth.glb' },
   wadded_kleenex_set: { path: '/assets/models/props/newspaper_and_assorted.glb' },
   trash_bag_black: { path: '/assets/models/props/trash_can_trash_bag.glb' },
@@ -80,7 +87,7 @@ function cloneObject(root) {
 }
 
 export class AssetSystem {
-  constructor(scene, manifest) {
+  constructor(scene, manifest, renderer) {
     this.scene = scene;
     this.manifest = manifest;
     this.cache = new Map();
@@ -92,6 +99,11 @@ export class AssetSystem {
 
     this.gltfLoader = new GLTFLoader();
     this.gltfLoader.setDRACOLoader(this.dracoLoader);
+    this.gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+    this.ktx2Loader = new KTX2Loader();
+    this.ktx2Loader.setTranscoderPath(manifest?.ktx2?.transcoderPath || 'https://unpkg.com/three@0.166.1/examples/jsm/libs/basis/');
+    if (renderer) this.ktx2Loader.detectSupport(renderer);
+    this.gltfLoader.setKTX2Loader(this.ktx2Loader);
     this.fbxLoader = new FBXLoader();
   }
 
