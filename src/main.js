@@ -1,6 +1,6 @@
 import './style.css';
 import * as THREE from 'three';
-import { AssetSystem, loadJson } from './asset-system.js';
+import { AssetSystem, KILLER_ANIMATION_FALLBACKS, loadJson } from './asset-system.js';
 
 const PLAYER_WALK_SPEED = 2.1;
 const PLAYER_SPRINT_SPEED = 2.95;
@@ -210,6 +210,9 @@ const killer = {
   mixer: null,
   actions: {},
   currentClip: null,
+  animationRequested: 'idle',
+  animationName: 'none',
+  animationFallback: false,
   mesh: null
 };
 
@@ -274,6 +277,10 @@ function gridToWorldZ(gz) {
 
 function worldToGrid(x, z) {
   return { x: Math.round(x / 2), z: Math.round(z / 2) };
+}
+
+function dist(a, b) {
+  return Math.hypot(a.x - b.x, a.z - b.z);
 }
 
 function walkable(gx, gz) {
@@ -467,10 +474,14 @@ async function instantiateLevelItem(item, isInteractable = true) {
 }
 
 function setKillerAnimation(name) {
-  if (!killer.mixer) return;
-  const fallbackName = name === 'chase' && !killer.actions.chase ? 'run' : name;
-  const action = killer.actions[fallbackName] || killer.actions.walk || killer.actions.idle;
-  if (!action || killer.currentClip === action) return;
+  killer.animationRequested = name;
+  const candidates = KILLER_ANIMATION_FALLBACKS[name] || [name, 'idle', 'walk'];
+  const resolvedName = candidates.find((candidate) => killer.actions[candidate]);
+  killer.animationName = resolvedName || 'none';
+  killer.animationFallback = Boolean(resolvedName && resolvedName !== name);
+  if (!killer.mixer || !resolvedName) return;
+  const action = killer.actions[resolvedName];
+  if (killer.currentClip === action) return;
   if (killer.currentClip) killer.currentClip.fadeOut(0.18);
   action.reset().fadeIn(0.18).play();
   killer.currentClip = action;
@@ -479,10 +490,10 @@ function setKillerAnimation(name) {
 function syncKillerAnimation() {
   if (!killer.awake) return setKillerAnimation('idle');
   if (killer.caught) return setKillerAnimation('attack');
-  if (killer.stunTimer > 0) return setKillerAnimation('idle');
-  if (killer.state === 'chase') return setKillerAnimation('run');
+  if (killer.stunTimer > 0) return setKillerAnimation('stunned');
+  if (killer.state === 'chase') return setKillerAnimation('chase');
   if (killer.state === 'search') return setKillerAnimation('search');
-  if (killer.state === 'distracted') return setKillerAnimation(killer.distractedByPhone ? 'phoneCheck' : 'idle');
+  if (killer.state === 'distracted') return setKillerAnimation(killer.distractedByPhone ? 'phoneCheck' : 'distracted');
   return setKillerAnimation('walk');
 }
 
@@ -595,6 +606,7 @@ function resolveStruggle(success) {
   killer.lastKnown = { x: player.x, z: player.z };
   player.stamina = Math.max(player.stamina, 55);
   player.exhausted = false;
+  syncKillerAnimation();
   showMessage('You break free and buy space.');
   setSubtitle('He recoils.');
 }
@@ -813,6 +825,39 @@ function updateUI() {
   ui.debug.textContent = `Assets loaded ${assetStats.loaded} · fallbacks ${assetStats.fallback} · rooms ${level.rooms.length} · ${assetStats.recent.join(' | ')}`;
 }
 
+function renderGameToText() {
+  return JSON.stringify({
+    coordinateSystem: 'grid coordinates: x increases east, z increases south; origin is the top-left grid cell',
+    player: {
+      x: Number(player.x.toFixed(3)),
+      z: Number(player.z.toFixed(3)),
+      hidden: player.hidden,
+      pills: player.pills,
+      stamina: Math.round(player.stamina),
+      phoneOpen: player.phoneOpen,
+      phoneOn: player.phoneOn
+    },
+    killer: {
+      x: Number(killer.x.toFixed(3)),
+      z: Number(killer.z.toFixed(3)),
+      awake: killer.awake,
+      state: killer.state,
+      animationRequested: killer.animationRequested,
+      animation: killer.animationName,
+      animationFallback: killer.animationFallback,
+      caught: killer.caught,
+      stunTimer: Number(killer.stunTimer.toFixed(2))
+    },
+    struggle: {
+      active: struggle.active,
+      taps: struggle.taps,
+      remaining: Number(struggle.timer.toFixed(2))
+    }
+  });
+}
+
+window.render_game_to_text = renderGameToText;
+
 function updateSleepingPose() {
   if (!killer.mesh || killer.awake) return;
   const bed = killer.bedAnchor || { x: killer.x, z: killer.z };
@@ -987,12 +1032,7 @@ async function init() {
   animate();
 }
 
-function animate() {
-  requestAnimationFrame(animate);
-  const now = performance.now();
-  const dt = Math.min(0.05, (now - lastFrame) / 1000);
-  lastFrame = now;
-
+function stepSimulation(dt) {
   if (struggle.active) {
     struggle.timer -= dt;
     ui.struggleTimer.style.width = `${Math.max(0, (struggle.timer / STRUGGLE_MAX_TIME) * 100)}%`;
@@ -1003,7 +1043,9 @@ function animate() {
     updateStamina(dt);
     updatePhone(dt);
   }
+}
 
+function renderFrame(dt) {
   if (!killer.awake) updateSleepingPose();
   if (killer.mixer) killer.mixer.update(dt);
   updateHandsAndCameraLock(dt);
@@ -1013,6 +1055,24 @@ function animate() {
   updateUI();
   drawPhoneMap();
   renderer.render(scene, camera);
+}
+
+window.advanceTime = (ms) => {
+  const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+  for (let i = 0; i < steps; i += 1) {
+    stepSimulation(1 / 60);
+    updateAudio(1 / 60);
+  }
+  renderFrame(1 / 60);
+};
+
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const dt = Math.min(0.05, (now - lastFrame) / 1000);
+  lastFrame = now;
+  stepSimulation(dt);
+  renderFrame(dt);
 }
 
 renderer.domElement.addEventListener('pointerdown', async (event) => {

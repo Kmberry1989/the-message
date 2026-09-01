@@ -13,8 +13,8 @@
     "check": "node prototype-check.js"
   },
   "dependencies": {
-    "vite": "^5.4.11",
-    "three": "^0.166.1"
-  },
-  "devDependencies": {}
+    "archiver": "^8.0.0",
+    "three": "^0.166.1",
+    "vite": "^5.4.11"
+  }
 }

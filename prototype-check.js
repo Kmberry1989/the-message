@@ -11,6 +11,17 @@ if (!code.includes('DRACOLoader') || !code.includes('setDRACOLoader')) { console
 if (!code.includes('FBXLoader')) { console.error('FBXLoader is not wired'); ok=false; }
 if (!code.includes('/assets/models/characters/killer/creeper.fbx')) { console.error('creeper.fbx runtime override is missing'); ok=false; }
 if (!code.includes('/assets/models/characters/killer/animations/walk.fbx')) { console.error('killer external animation override is missing'); ok=false; }
+if (code.includes('/assets/models/characters/killer/animations/chase.fbx')) { console.error('killer chase points at a missing FBX'); ok=false; }
+if (code.includes('/assets/models/characters/killer/animations/stunned.fbx')) { console.error('killer stunned points at a missing FBX'); ok=false; }
+const killerAnimationFiles = [
+  'idle.fbx', 'walk.fbx', 'run.fbx', 'search.fbx', 'attack.fbx', 'phone-check.fbx'
+];
+for (const file of killerAnimationFiles) {
+  if (!fs.existsSync(`public/assets/models/characters/killer/animations/${file}`)) {
+    console.error(`Missing killer animation file ${file}`); ok=false;
+  }
+}
+if (!code.includes("chase: ['chase', 'run', 'walk', 'idle']")) { console.error('killer chase fallback is not wired'); ok=false; }
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 if (packageJson.scripts?.predev !== 'node scripts/sync-levels.mjs' || packageJson.scripts?.prebuild !== 'node scripts/sync-levels.mjs') {
   console.error('Level sync scripts are not wired into predev/prebuild');

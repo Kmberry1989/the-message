@@ -8,12 +8,25 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 const KILLER_ANIMS = {
   idle: '/assets/models/characters/killer/animations/idle.fbx',
   walk: '/assets/models/characters/killer/animations/walk.fbx',
-  chase: '/assets/models/characters/killer/animations/chase.fbx',
   run: '/assets/models/characters/killer/animations/run.fbx',
   search: '/assets/models/characters/killer/animations/search.fbx',
   attack: '/assets/models/characters/killer/animations/attack.fbx',
-  phoneCheck: '/assets/models/characters/killer/animations/phone-check.fbx',
-  stunned: '/assets/models/characters/killer/animations/stunned.fbx'
+  phoneCheck: '/assets/models/characters/killer/animations/phone-check.fbx'
+};
+
+// These are logical state names, not additional files. The project currently
+// has no dedicated chase or stunned clips, so the runtime resolves those
+// states to the closest available animation in this order.
+export const KILLER_ANIMATION_FALLBACKS = {
+  idle: ['idle', 'walk'],
+  walk: ['walk', 'idle'],
+  chase: ['chase', 'run', 'walk', 'idle'],
+  run: ['run', 'walk', 'idle'],
+  search: ['search', 'walk', 'idle'],
+  distracted: ['phoneCheck', 'idle', 'walk'],
+  phoneCheck: ['phoneCheck', 'idle', 'walk'],
+  attack: ['attack', 'walk', 'idle'],
+  stunned: ['stunned', 'idle', 'walk']
 };
 
 const RECORD_OVERRIDES = {
