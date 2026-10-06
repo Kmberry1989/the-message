@@ -29,6 +29,8 @@ const KILLER_WAKE_DISTANCE = 2.4;
 const CAMERA_LOCK_DISTANCE = 4.9;
 const HEARTBEAT_DISTANCE = 6.5;
 const HANDS_RAISE_DISTANCE = 6.75;
+const LOOK_TAP_THRESHOLD = 12;
+const SHOW_ASSET_DEBUG = new URLSearchParams(window.location.search).has('debug');
 
 const ROOM_STYLES = {
   bedroom: { floor: '#726257', wall: '#9b8d83', light: 0xffe7c4, lightIntensity: 0.9 },
@@ -76,7 +78,7 @@ app.innerHTML = `
     <div id="phone">
       <div id="phoneScreen">
         <div class="phoneHeader"><span id="phoneTime">12:04 AM</span><span id="battery">12%</span></div>
-        <canvas id="phoneMap" width="320" height="240"></canvas>
+        <canvas id="phoneMap" width="320" height="240" role="img" aria-label="Phone map. Player and killer positions update while the phone is open."></canvas>
         <div id="phoneBody"></div>
         <div class="phoneActions">
           <button class="phoneAction" id="camBtn">CAMS</button>
@@ -100,8 +102,8 @@ app.innerHTML = `
       <div id="joystickBase"></div>
       <div id="joystickKnob"></div>
     </div>
-    <div id="controls"><div class="btn" id="phoneBtn">PHONE</div><div class="btn" id="sprintBtn">SPRINT</div></div>
-    <div id="debug"></div>
+    <div id="controls"><button type="button" class="btn" id="phoneBtn" aria-expanded="false">PHONE</button><button type="button" class="btn" id="sprintBtn">SPRINT</button></div>
+    <div id="debug" class="${SHOW_ASSET_DEBUG ? 'show' : ''}"></div>
   </div>`;
 
 const scene = new THREE.Scene();
@@ -154,6 +156,8 @@ let audioReady = false;
 let sprinting = false;
 let draggingLook = false;
 let lookPointerId = null;
+let lookPointerStart = null;
+let lookPointerMoved = false;
 let movePointerId = null;
 let assetStats = { loaded: 0, fallback: 0, recent: [] };
 
@@ -287,6 +291,33 @@ function walkable(gx, gz) {
   return grid[gz] && grid[gz][gx] && grid[gz][gx] !== '#';
 }
 
+function findGridPath(from, to) {
+  const start = { x: Math.round(from.x), z: Math.round(from.z) };
+  const goal = { x: Math.round(to.x), z: Math.round(to.z) };
+  if (!walkable(start.x, start.z) || !walkable(goal.x, goal.z)) return [];
+  const key = (point) => `${point.x},${point.z}`;
+  const queue = [start];
+  const previous = new Map([[key(start), null]]);
+  const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor];
+    if (current.x === goal.x && current.z === goal.z) break;
+    for (const [dx, dz] of directions) {
+      const next = { x: current.x + dx, z: current.z + dz };
+      const nextKey = key(next);
+      if (!walkable(next.x, next.z) || previous.has(nextKey)) continue;
+      previous.set(nextKey, current);
+      queue.push(next);
+    }
+  }
+
+  if (!previous.has(key(goal))) return [];
+  const path = [];
+  for (let current = goal; current; current = previous.get(key(current))) path.push(current);
+  return path.reverse();
+}
+
 function resolveAnchor(roomId, anchorId, fallback) {
   const room = roomIndex.get(roomId);
   const anchor = room?.anchors?.find((candidate) => candidate.id === anchorId);
@@ -392,6 +423,7 @@ async function ensureAudio() {
 function setPhoneOpen(nextOpen) {
   player.phoneOpen = nextOpen && player.phoneOn;
   ui.phone.classList.toggle('on', player.phoneOpen);
+  ui.phoneBtn.setAttribute('aria-expanded', String(player.phoneOpen));
   renderPhone(player.phoneOpen ? (phoneState.incomingVisible ? 'warning' : 'home') : 'home');
 }
 
@@ -699,6 +731,8 @@ function drawPhoneMap() {
 
 function renderPhone(mode) {
   drawPhoneMap();
+  const killerDescription = killer.awake ? `${killer.state} near grid ${Math.round(killer.x)}, ${Math.round(killer.z)}` : 'asleep';
+  ui.phoneMap.setAttribute('aria-label', `Phone map. Player at grid ${Math.round(player.x)}, ${Math.round(player.z)}. Killer ${killerDescription}.`);
   if (!player.phoneOpen) return;
   if (mode === 'cams') ui.phoneBody.innerHTML = '<h3>SECURITY FEEDS</h3><p>Room-authored camera coverage. The hall and living room are visible.</p>';
   else if (mode === 'calling') ui.phoneBody.innerHTML = '<h3>CALL ACTIVE</h3><p>You are making noise. Expect consequences.</p>';
@@ -760,10 +794,13 @@ function updateKiller(dt) {
     if (dist(killerPoint, target) < 0.3) killer.patrolIndex += 1;
   }
 
+  const path = findGridPath(killerPoint, target);
+  const nextPathNode = path[1] || path[0];
+  const movementTarget = nextPathNode || target;
   const baseSpeed = killer.state === 'chase' ? level.difficulty.killerChaseSpeed : level.difficulty.killerPatrolSpeed;
   const speed = baseSpeed * (killer.frenzy ? level.difficulty.frenzyMultiplier : 1);
-  const dx = target.x - killer.x;
-  const dz = target.z - killer.z;
+  const dx = movementTarget.x - killer.x;
+  const dz = movementTarget.z - killer.z;
   const distance = Math.hypot(dx, dz);
   if (distance > 0.02 && killer.stunTimer <= 0 && !killer.caught) {
     const nextX = killer.x + (dx / distance) * speed * dt;
@@ -774,7 +811,7 @@ function updateKiller(dt) {
 
   if (killer.mesh) {
     killer.mesh.position.set(killer.x * 2, 0, killer.z * 2);
-    if (distance > 0.01) killer.mesh.lookAt(target.x * 2, 0, target.z * 2);
+    if (distance > 0.01) killer.mesh.lookAt(movementTarget.x * 2, 0, movementTarget.z * 2);
   }
 
   if (distanceToPlayer < KILLER_CATCH_DISTANCE && !player.hidden) triggerCaughtState();
@@ -822,7 +859,7 @@ function updateUI() {
           : 'He is awake.';
   ui.battery.textContent = player.phoneOn ? `${Math.max(0, Math.round(player.phoneBattery))}%` : 'OFF';
   ui.phoneTime.textContent = killer.awake ? '12:09 AM' : '12:04 AM';
-  ui.debug.textContent = `Assets loaded ${assetStats.loaded} · fallbacks ${assetStats.fallback} · rooms ${level.rooms.length} · ${assetStats.recent.join(' | ')}`;
+  if (SHOW_ASSET_DEBUG) ui.debug.textContent = `Assets loaded ${assetStats.loaded} · fallbacks ${assetStats.fallback} · rooms ${level.rooms.length} · ${assetStats.recent.join(' | ')}`;
 }
 
 function renderGameToText() {
@@ -971,6 +1008,9 @@ function endMoveStick() {
 
 function handleLookMove(pointer) {
   if (!draggingLook) return;
+  if (lookPointerStart && Math.hypot(pointer.clientX - lookPointerStart.x, pointer.clientY - lookPointerStart.y) >= LOOK_TAP_THRESHOLD) {
+    lookPointerMoved = true;
+  }
   player.yaw -= pointer.movementX * LOOK_SENSITIVITY;
   player.pitch = Math.max(-1.2, Math.min(1.2, player.pitch - pointer.movementY * LOOK_SENSITIVITY));
 }
@@ -1084,6 +1124,8 @@ renderer.domElement.addEventListener('pointerdown', async (event) => {
   } else if (lookPointerId === null) {
     lookPointerId = event.pointerId;
     draggingLook = true;
+    lookPointerStart = { x: event.clientX, y: event.clientY };
+    lookPointerMoved = false;
   }
 });
 
@@ -1104,10 +1146,12 @@ renderer.domElement.addEventListener('pointerup', async (event) => {
     const targetRect = renderer.domElement.getBoundingClientRect();
     const localX = event.clientX - targetRect.left;
     const localY = event.clientY - targetRect.top;
-    if (localX > targetRect.width * 0.38 && localY < targetRect.height * 0.8) {
+    if (!lookPointerMoved && localX > targetRect.width * 0.38 && localY < targetRect.height * 0.8) {
       const nearest = nearestInteractable();
       if (nearest) interact(nearest);
     }
+    lookPointerStart = null;
+    lookPointerMoved = false;
   }
 });
 
@@ -1116,15 +1160,37 @@ renderer.domElement.addEventListener('pointercancel', (event) => {
   if (event.pointerId === lookPointerId) {
     draggingLook = false;
     lookPointerId = null;
+    lookPointerStart = null;
+    lookPointerMoved = false;
   }
 });
 
-ui.sprintBtn.addEventListener('pointerdown', async () => {
+async function startSprinting() {
   await ensureAudio();
   sprinting = true;
+  ui.sprintBtn.dataset.active = 'true';
+}
+
+function stopSprinting() {
+  sprinting = false;
+  delete ui.sprintBtn.dataset.active;
+}
+
+ui.sprintBtn.addEventListener('pointerdown', startSprinting);
+ui.sprintBtn.addEventListener('pointerup', stopSprinting);
+ui.sprintBtn.addEventListener('pointercancel', stopSprinting);
+ui.sprintBtn.addEventListener('keydown', (event) => {
+  if ((event.key === ' ' || event.key === 'Enter') && !event.repeat) startSprinting();
 });
-ui.sprintBtn.addEventListener('pointerup', () => { sprinting = false; });
-ui.sprintBtn.addEventListener('pointercancel', () => { sprinting = false; });
+ui.sprintBtn.addEventListener('keyup', (event) => {
+  if (event.key === ' ' || event.key === 'Enter') stopSprinting();
+});
+addEventListener('keydown', (event) => {
+  if (event.key === 'Shift' && !event.repeat) startSprinting();
+});
+addEventListener('keyup', (event) => {
+  if (event.key === 'Shift') stopSprinting();
+});
 ui.phoneBtn.addEventListener('click', async () => {
   await ensureAudio();
   if (!player.phoneOn) return showMessage(PHONE_POWER_OFF_MESSAGE);

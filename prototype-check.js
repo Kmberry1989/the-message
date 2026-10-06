@@ -7,6 +7,7 @@ const manifest = JSON.parse(fs.readFileSync('public/assets/manifest.json','utf8'
 if (!manifest.draco?.enabled) { console.error('Draco not enabled in manifest'); ok=false; }
 if (!Object.keys(manifest.assets||{}).length) { console.error('No assets in manifest'); ok=false; }
 const code = fs.readFileSync('src/asset-system.js','utf8');
+const mainCode = fs.readFileSync('src/main.js','utf8');
 if (!code.includes('DRACOLoader') || !code.includes('setDRACOLoader')) { console.error('DRACOLoader is not wired'); ok=false; }
 if (!code.includes('FBXLoader')) { console.error('FBXLoader is not wired'); ok=false; }
 if (!code.includes('/assets/models/characters/killer/creeper.fbx')) { console.error('creeper.fbx runtime override is missing'); ok=false; }
@@ -22,6 +23,13 @@ for (const file of killerAnimationFiles) {
   }
 }
 if (!code.includes("chase: ['chase', 'run', 'walk', 'idle']")) { console.error('killer chase fallback is not wired'); ok=false; }
+if (!mainCode.includes('function findGridPath(') || !mainCode.includes('const path = findGridPath(killerPoint, target)')) {
+  console.error('Killer BFS navigation is not wired'); ok=false;
+}
+if (!mainCode.includes('<button type="button" class="btn" id="phoneBtn"') || !mainCode.includes('<button type="button" class="btn" id="sprintBtn"')) {
+  console.error('Primary controls are not semantic buttons'); ok=false;
+}
+if (!mainCode.includes('!lookPointerMoved && localX')) { console.error('Look drag/tap guard is not wired'); ok=false; }
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 if (packageJson.scripts?.predev !== 'node scripts/sync-levels.mjs' || packageJson.scripts?.prebuild !== 'node scripts/sync-levels.mjs') {
   console.error('Level sync scripts are not wired into predev/prebuild');
